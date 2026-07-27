@@ -1,0 +1,18 @@
+<div dir="rtl" class="font-body bg-white relative">
+  <app-home-hero></app-home-hero>
+  <app-home-trust-builders></app-home-trust-builders>
+  <app-home-showcase></app-home-showcase>
+  <app-home-audience></app-home-audience>
+  <app-home-statement></app-home-statement>
+  <app-home-cta></app-home-cta>
+
+  <!-- Global Scroll Progress Indicator -->
+  @if (showIndicator()) {
+    <div class="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-50 transition-opacity duration-300" dir="ltr">
+      <span class="text-[10px] font-bold tracking-[0.2em] text-[#122056]" style="writing-mode: vertical-rl;">SCROLL</span>
+      <div class="w-[2px] h-24 md:h-32 bg-gray-200 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full bg-[#122056] transition-all duration-75" [style.height.%]="scrollProgress()"></div>
+      </div>
+    </div>
+  }
+</div>
