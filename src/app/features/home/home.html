@@ -5,10 +5,19 @@
   <app-home-audience></app-home-audience>
   <app-home-statement></app-home-statement>
   <app-home-cta></app-home-cta>
+  <app-home-ai-agent></app-home-ai-agent>
+  <app-home-whatsapp></app-home-whatsapp>
+  <app-home-booking></app-home-booking>
+  <app-home-onboarding></app-home-onboarding>
+  <app-home-testimonials></app-home-testimonials>
+  <!-- <app-home-blog></app-home-blog> -->
+  <app-home-pricing></app-home-pricing>
+  <app-home-faq></app-home-faq>
+  <app-home-footer></app-home-footer>
 
   <!-- Global Scroll Progress Indicator -->
   @if (showIndicator()) {
-    <div class="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-50 transition-opacity duration-300" dir="ltr">
+    <div class="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-3 z-50 transition-opacity duration-300" dir="ltr">
       <span class="text-[10px] font-bold tracking-[0.2em] text-[#122056]" style="writing-mode: vertical-rl;">SCROLL</span>
       <div class="w-[2px] h-24 md:h-32 bg-gray-200 relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full bg-[#122056] transition-all duration-75" [style.height.%]="scrollProgress()"></div>

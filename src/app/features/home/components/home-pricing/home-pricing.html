@@ -1,0 +1,163 @@
+  <!-- 15. قسم خطط الأسعار (Pricing Section) -->
+  <section id="pricing" class="py-12 md:py-24 bg-[#FAFAFD] relative z-20 overflow-hidden">
+    <div class="max-w-[95rem] mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- هيدر الأسعار -->
+      <div class="text-center mb-12" data-aos="fade-up">
+        <h2 class="text-3xl md:text-5xl font-extrabold text-[#122056] mb-4">
+          خطط أسعار تناسب الجميع
+        </h2>
+        <p class="text-[#46464F] text-lg mb-8">
+          اختر الخطة التي تناسب حجمك اليوم، وأضف ما تحتاجه فقط عند التوسع
+        </p>
+
+        <!-- زرار التحويل (شهري / سنوي) -->
+        <div class="inline-flex items-center bg-gray-200/70 p-1.5 rounded-full relative">
+          <!-- خلفية متحركة للزرار النشط -->
+          <div class="absolute top-1.5 bottom-1.5 w-1/2 bg-[#122056] rounded-full shadow-md transition-transform duration-300 ease-in-out"
+               [class.translate-x-0]="!isYearly"
+               [class.-translate-x-full]="isYearly"
+               [ngStyle]="{'transform': isYearly ? 'translateX(-100%)' : 'translateX(0)'}">
+          </div>
+          
+          <button 
+            (click)="isYearly = false"
+            [class.text-white]="!isYearly"
+            [class.text-gray-600]="isYearly"
+            class="relative z-10 w-24 sm:w-32 py-2 text-sm sm:text-base font-bold rounded-full transition-colors duration-300">
+            شهري
+          </button>
+          
+          <button 
+            (click)="isYearly = true"
+            [class.text-white]="isYearly"
+            [class.text-gray-600]="!isYearly"
+            class="relative z-10 w-24 sm:w-32 py-2 text-sm sm:text-base font-bold rounded-full transition-colors duration-300 flex items-center justify-center gap-2">
+            سنوي <span class="hidden sm:inline-block bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full">وفر 20%</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- شبكة الباقات (5 أعمدة في الشاشات الكبيرة جداً) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 xl:gap-4 items-center">
+
+        <!-- الباقة 1: طبيب فردي -->
+        <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-aos="fade-up" data-aos-delay="0">
+          <h3 class="text-xl font-bold text-[#122056] text-center mb-2">طبيب فردي</h3>
+          <p class="text-gray-400 text-xs text-center mb-6 h-8">طبيب فردي مع موظف استقبال — أبسط بداية رقمية</p>
+          
+          <div class="text-center mb-8">
+            <span class="text-3xl font-extrabold text-[#122056] transition-all">{{ isYearly ? '٦,٠٠٠' : '٧٠٠' }}</span>
+            <span class="text-gray-400 text-sm"> ج.م/{{ isYearly ? 'سنة' : 'شهر' }}</span>
+          </div>
+
+          <ul class="space-y-4 mb-8 text-sm text-gray-600">
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 2 مستخدم</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 1 فرع</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 1 ملف تخصص</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> ١٠٠ رصيد ذكاء اصطناعي/شهر</li>
+          </ul>
+
+          <button class="w-full py-3 rounded-xl bg-gray-50 text-[#122056] font-bold border border-gray-200 hover:bg-gray-100 transition-colors">ابدأ الآن</button>
+        </div>
+
+        <!-- الباقة 2: عيادة صغيرة (الأكثر طلباً - مميزة) -->
+        <div class="relative bg-white rounded-3xl p-8 border-2 border-[#5B65DC] shadow-[0_0_40px_rgba(91,101,220,0.15)] transform xl:scale-105 z-10" data-aos="fade-up" data-aos-delay="100">
+          
+          <!-- بادج الأكثر طلباً -->
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#4facfe] to-[#00f2fe] text-white px-4 py-1 rounded-full text-xs font-bold shadow-md">
+            الأكثر طلباً
+          </div>
+
+          <h3 class="text-2xl font-black text-[#122056] text-center mb-2">عيادة صغيرة</h3>
+          <p class="text-gray-500 text-xs text-center mb-6 h-8">فرع واحد وتشغيل حقيقي للعيادة</p>
+          
+          <div class="text-center mb-8">
+            <span class="text-4xl font-black text-[#5B65DC] transition-all">{{ isYearly ? '١٢,٠٠٠' : '١,٢٠٠' }}</span>
+            <span class="text-gray-400 text-sm"> ج.م/{{ isYearly ? 'سنة' : 'شهر' }}</span>
+          </div>
+
+          <ul class="space-y-4 mb-8 text-sm text-[#122056] font-medium">
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-[#5B65DC] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 8 مستخدم</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-[#5B65DC] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 1 فرع</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-[#5B65DC] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 1 ملف تخصص</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-[#5B65DC] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 1 قناة واتساب</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-[#5B65DC] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> ٥٠٠ رصيد ذكاء اصطناعي/شهر</li>
+          </ul>
+
+          <button class="w-full py-3.5 rounded-xl bg-[#122056] text-white font-bold shadow-lg hover:bg-[#5B65DC] transition-colors">ابدأ الآن</button>
+        </div>
+
+        <!-- الباقة 3: عيادة كبيرة -->
+        <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+          <h3 class="text-xl font-bold text-[#122056] text-center mb-2">عيادة كبيرة</h3>
+          <p class="text-gray-400 text-xs text-center mb-6 h-8">عيادة متعددة الأطباء بحدود موسعة</p>
+          
+          <div class="text-center mb-8">
+            <span class="text-3xl font-extrabold text-[#122056] transition-all">{{ isYearly ? '٢٥,٠٠٠' : '٢,٥٠٠' }}</span>
+            <span class="text-gray-400 text-sm"> ج.م/{{ isYearly ? 'سنة' : 'شهر' }}</span>
+          </div>
+
+          <ul class="space-y-4 mb-8 text-sm text-gray-600">
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 20 مستخدم</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 1 فرع</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 3 ملف تخصص</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 1 قناة واتساب</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> ١,٠٠٠ رصيد ذكاء اصطناعي/شهر</li>
+          </ul>
+
+          <button class="w-full py-3 rounded-xl bg-gray-50 text-[#122056] font-bold border border-gray-200 hover:bg-gray-100 transition-colors">ابدأ الآن</button>
+        </div>
+
+        <!-- الباقة 4: مركز طبي -->
+        <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
+          <h3 class="text-xl font-bold text-[#122056] text-center mb-2">مركز طبي</h3>
+          <p class="text-gray-400 text-xs text-center mb-6 h-8">مركز متعدد الفروع والأقسام</p>
+          
+          <div class="text-center mb-8">
+            <span class="text-3xl font-extrabold text-[#122056] transition-all">{{ isYearly ? '٤٠,٠٠٠' : '٤,٠٠٠' }}</span>
+            <span class="text-gray-400 text-sm"> ج.م/{{ isYearly ? 'سنة' : 'شهر' }}</span>
+          </div>
+
+          <ul class="space-y-4 mb-8 text-sm text-gray-600">
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 40 مستخدم</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 2 فرع</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 5 ملف تخصص</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> 2 قناة واتساب</li>
+            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> ٢,٠٠٠ رصيد ذكاء اصطناعي/شهر</li>
+          </ul>
+
+          <button class="w-full py-3 rounded-xl bg-gray-50 text-[#122056] font-bold border border-gray-200 hover:bg-gray-100 transition-colors">ابدأ الآن</button>
+        </div>
+
+        <!-- الباقة 5: مستشفى / مؤسسات (Enterprise) -->
+        <div class="bg-gradient-to-br from-[#122056] to-[#0d1740] rounded-3xl p-6 shadow-2xl transform xl:-translate-y-2 text-white flex flex-col justify-between h-full" data-aos="fade-up" data-aos-delay="400">
+          <div>
+            <h3 class="text-xl font-bold text-center mb-4">مستشفى / مؤسسات</h3>
+            <p class="text-blue-200 text-xs text-center mb-8 leading-relaxed">
+              حلول ERP متكاملة وتكاملات وترحيل بيانات واتفاقية مستوى خدمة (SLA) مخصصة لمؤسستك.
+            </p>
+            
+            <div class="text-center mb-10 mt-14">
+              <span class="text-3xl font-extrabold block mb-2">عرض مخصص</span>
+              <span class="text-blue-300 text-sm">مصمم خصيصاً لاحتياجاتك</span>
+            </div>
+          </div>
+
+          <button class="w-full py-3.5 rounded-xl bg-white text-[#122056] font-extrabold hover:bg-gray-100 transition-colors mt-auto shadow-lg">
+            تواصل مع المبيعات
+          </button>
+        </div>
+
+      </div>
+
+      <!-- رابط مقارنة الخطط -->
+      <div class="text-center mt-12">
+        <a href="#" class="inline-flex items-center gap-2 text-[#5B65DC] font-bold hover:text-[#122056] transition-colors">
+          قارن كل الخطط والإضافات
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+        </a>
+      </div>
+
+    </div>
+  </section>

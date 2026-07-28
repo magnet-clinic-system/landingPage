@@ -1,0 +1,20 @@
+/* حركة ظهور رسايل الواتساب */
+@keyframes chat-pop {
+  0% { opacity: 0; transform: translateY(15px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.chat-bubble-1 { animation: chat-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards; opacity: 0; }
+.chat-bubble-2 { animation: chat-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.5s forwards; opacity: 0; }
+.chat-bubble-3 { animation: chat-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 2.5s forwards; opacity: 0; }
+
+/* نبض النقطة الخضراء (متصل الآن) */
+@keyframes online-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+  70% { box-shadow: 0 0 0 8px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+.blob-green {
+  animation: online-pulse 2s infinite;
+}

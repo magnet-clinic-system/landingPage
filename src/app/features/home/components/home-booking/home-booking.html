@@ -1,0 +1,163 @@
+  <!-- 11. قسم الحجز الأونلاين (Online Booking Widget) -->
+  <section class="py-20 md:py-16 md:py-28 bg-white relative z-20 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center">
+        
+        <!-- العمود الأيمن (نصوص المميزات) -->
+        <div data-aos="fade-up" data-aos-duration="1000">
+          
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#EEEFFD] text-[#5B65DC] font-bold text-sm mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            حجز أونلاين وإدارة مواعيد
+          </div>
+
+          <!-- العنوان -->
+          <h2 class="text-3xl md:text-4xl lg:text-[2.75rem] font-extrabold text-[#122056] leading-snug mb-2">
+            حجز أونلاين وإدارة مواعيد
+          </h2>
+          <h3 class="text-3xl md:text-4xl lg:text-[2.75rem] font-extrabold text-[#5B65DC] leading-snug mb-6">
+            موقع خاص لعيادتك
+          </h3>
+
+          <!-- الوصف -->
+          <p class="text-[#46464F] text-lg leading-relaxed mb-10">
+            منظومة حجز متكاملة. دع المرضى يحجزون مواعيدهم بأنفسهم 24/7 من خلال موقعك الخاص أو التطبيق.
+          </p>
+
+          <!-- القائمة (List Features) -->
+          <div class="space-y-2">
+            
+            <!-- ميزة 1 -->
+            <div class="group border border-gray-100 rounded-2xl p-6 hover:border-[#5B65DC] hover:shadow-md transition-all duration-300 cursor-default flex items-center justify-between bg-white">
+              <div>
+                <h4 class="font-bold text-[#122056] text-lg mb-1">موقع خاص لعيادتك</h4>
+                <p class="text-gray-500 text-sm">تحكم في الألوان والحقول والشعار لتتناسب مع هويتك</p>
+              </div>
+              <div class="text-gray-300 group-hover:text-[#5B65DC] transition-colors -translate-x-2 group-hover:translate-x-0 duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+              </div>
+            </div>
+
+            <!-- ميزة 2 -->
+            <div class="group border border-gray-100 rounded-2xl p-6 hover:border-[#5B65DC] hover:shadow-md transition-all duration-300 cursor-default flex items-center justify-between bg-white">
+              <div>
+                <h4 class="font-bold text-[#122056] text-lg mb-1">تزامن فوري للمواعيد</h4>
+                <p class="text-gray-500 text-sm">أي حجز يتم تحديثه فوراً في جدول الطبيب</p>
+              </div>
+              <div class="text-gray-300 group-hover:text-[#5B65DC] transition-colors -translate-x-2 group-hover:translate-x-0 duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- العمود الأيسر (تصميم بطاقة الحجز بالـ HTML/CSS) -->
+        <div class="relative flex justify-center items-center mt-16 lg:mt-0" data-aos="fade-right" data-aos-duration="1200">
+          
+          <!-- توهج خلفي (Glow Effect) -->
+          <div class="absolute inset-0 bg-[#5B65DC] opacity-[0.15] blur-[80px] rounded-full w-3/4 h-3/4 m-auto z-0 pointer-events-none"></div>
+
+          <!-- بطاقة الحجز (Widget) -->
+          <div class="relative z-10 w-full max-w-[380px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(18,32,86,0.1)] border border-gray-50 p-6 sm:p-8 animate-wave" style="animation-duration: 5s;">
+            
+            <!-- هيدر البطاقة -->
+            <div class="flex justify-between items-start mb-8">
+              <div>
+                <h3 class="font-extrabold text-[#122056] text-xl">حجز موعد</h3>
+                <p class="text-gray-400 text-xs mt-1">اختر الموعد المناسب لك</p>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-blue-50 text-[#5B65DC] flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
+              </div>
+            </div>
+
+            <!-- اختيار الطبيب -->
+            <div class="mb-6">
+              <span class="text-xs text-gray-400 font-bold mb-2 block">الطبيب</span>
+              <div class="bg-[#FAFAFD] border border-[#EEEFFD] rounded-xl p-3 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-[#E2E3EF] text-[#5B65DC] flex items-center justify-center overflow-hidden shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mt-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-[#122056] text-sm">د. محمد علي</h4>
+                  <p class="text-gray-400 text-[10px]">استشاري قلب وأوعية دموية</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- اختيار التاريخ -->
+            <div class="mb-6">
+              <span class="text-xs text-gray-400 font-bold mb-2 block">التاريخ</span>
+              <div class="grid grid-cols-4 gap-2">
+                
+                <!-- يوم غير محدد -->
+                <div class="flex flex-col items-center justify-center bg-[#FAFAFD] text-gray-500 rounded-xl py-2 cursor-pointer hover:bg-gray-100 transition-colors">
+                  <span class="text-[10px] mb-1">السبت</span>
+                  <span class="text-lg font-bold">22</span>
+                </div>
+                
+                <!-- يوم محدد (Selected) -->
+                <div class="flex flex-col items-center justify-center bg-[#5B65DC] text-white rounded-xl py-2 shadow-md cursor-pointer transform scale-105 transition-transform">
+                  <span class="text-[10px] mb-1">الأحد</span>
+                  <span class="text-lg font-bold">23</span>
+                </div>
+
+                <!-- يوم غير محدد -->
+                <div class="flex flex-col items-center justify-center bg-[#FAFAFD] text-gray-500 rounded-xl py-2 cursor-pointer hover:bg-gray-100 transition-colors">
+                  <span class="text-[10px] mb-1">الإثنين</span>
+                  <span class="text-lg font-bold">24</span>
+                </div>
+
+                <!-- يوم غير محدد -->
+                <div class="flex flex-col items-center justify-center bg-[#FAFAFD] text-gray-500 rounded-xl py-2 cursor-pointer hover:bg-gray-100 transition-colors">
+                  <span class="text-[10px] mb-1">الثلاثاء</span>
+                  <span class="text-lg font-bold">25</span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- اختيار الوقت -->
+            <div class="mb-8">
+              <span class="text-xs text-gray-400 font-bold mb-2 block">الوقت</span>
+              <div class="grid grid-cols-3 gap-2">
+                
+                <!-- وقت محدد (Selected) -->
+                <div class="relative flex items-center justify-center bg-[#EEEFFD] border border-[#5B65DC] text-[#5B65DC] rounded-xl py-2 cursor-pointer">
+                  <span class="text-xs font-bold font-sans">10:00 ص</span>
+                  <div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#5B65DC] rounded-full text-white flex items-center justify-center border-2 border-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-2.5 h-2.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                  </div>
+                </div>
+
+                <!-- وقت غير محدد -->
+                <div class="flex items-center justify-center bg-white border border-gray-100 text-gray-500 rounded-xl py-2 cursor-pointer hover:border-gray-300 transition-colors">
+                  <span class="text-xs font-bold font-sans">10:30 ص</span>
+                </div>
+
+                <!-- وقت غير محدد -->
+                <div class="flex items-center justify-center bg-white border border-gray-100 text-gray-500 rounded-xl py-2 cursor-pointer hover:border-gray-300 transition-colors">
+                  <span class="text-xs font-bold font-sans">11:00 ص</span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- زرار التأكيد -->
+            <button class="w-full bg-[#122056] text-white py-3.5 rounded-xl font-bold text-sm flex justify-center items-center gap-2 hover:bg-[#0c1538] hover:shadow-lg transition-all">
+              تأكيد الحجز
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
