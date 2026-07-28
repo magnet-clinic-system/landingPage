@@ -6,8 +6,29 @@
 
 html {
   scroll-behavior: smooth;
+  /* Firefox Scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #A0A5EA #f8fafc;
 }
 
 body {
   font-family: 'Cairo', sans-serif;
+}
+
+/* WebKit Custom Scrollbar (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #A0A5EA; 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5B65DC; 
 }
