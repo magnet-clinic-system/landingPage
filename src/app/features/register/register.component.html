@@ -1,0 +1,342 @@
+<div class="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-8 relative font-body" dir="rtl">
+  
+  <!-- خلفية زخرفية ناعمة -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-60"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-100 rounded-full blur-3xl opacity-60"></div>
+  </div>
+
+  <div class="max-w-6xl w-full mx-auto relative z-10">
+
+    <!-- شريط علوي مع زر الرجوع للشاشة الرئيسية -->
+    <div class="flex items-center justify-between mb-8">
+      <a routerLink="/" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#122056] transition-colors bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
+        <svg class="w-4 h-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>العودة للرئيسية</span>
+      </a>
+
+      <div class="text-xl font-black text-[#122056]">
+        Algor<span class="text-[#5B65DC]">Clinic</span>
+      </div>
+    </div>
+
+    <!-- البطاقة الرئيسية بتصميم Split Screen -->
+    <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
+
+      <!-- العمود الأيمن / الجانبي: نبذة ومزايا وبطاقة الباقة المختارة (5 أعمدة) -->
+      <div class="lg:col-span-5 bg-gradient-to-br from-[#122056] via-[#1a2b72] to-[#253995] p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
+        
+        <!-- نقش جمالي بالخلفية -->
+        <div class="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] opacity-5 pointer-events-none"></div>
+
+        <div>
+          <!-- بادج التجربة المجانية -->
+          <div class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3.5 py-1.5 rounded-full text-xs font-bold mb-6">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            تجربة مجانية كاملة لمدة 14 يوماً
+          </div>
+
+          <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight mb-4">
+            ابدأ رقمنة عيادتك الطبية في أقل من دقيقة
+          </h1>
+
+          <p class="text-blue-100 text-sm leading-relaxed mb-8">
+            انضم لمئات الأطباء والمراكز الطبية التي تدير مواعيدها، فواتيرها، وملفات مرضاها بكل سهولة وسرعة.
+          </p>
+
+          <!-- كارت الباقة المختارة (إن وجدت) -->
+          @if (selectedPlan) {
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 mb-6 text-white animate-fade-in">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs uppercase tracking-wider text-blue-200 font-bold">الباقة المحددة</span>
+                @if (selectedPlan.isHot) {
+                  <span class="bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm">
+                    الأكثر طلباً
+                  </span>
+                }
+              </div>
+              <div class="text-xl font-extrabold text-white mb-1">
+                {{ selectedPlan.name }}
+              </div>
+              <div class="text-blue-100 text-sm mb-3">
+                {{ selectedPlan.price }} ج.م / {{ selectedPlan.durationDays >= 300 ? 'سنوياً' : 'شهرياً' }}
+              </div>
+              <div class="text-xs text-blue-200 border-t border-white/10 pt-2 flex items-center justify-between">
+                <span>{{ selectedPlan.maxUsers }} مستخدمين كحد أقصى</span>
+                <span>{{ selectedPlan.maxBranches }} فروع مسموحة</span>
+              </div>
+            </div>
+          } @else {
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-xs text-blue-200">
+              💡 <span class="font-semibold text-white">بدون بطاقة ائتمانية:</span> ستحصل على وصول فوري لكافة الميزات لمدة 14 يوماً بدون أي التزام مالي.
+            </div>
+          }
+
+          <!-- قائمة المزايا السريعة -->
+          <ul class="space-y-3 text-sm text-blue-100">
+            <li class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              <span>إنشاء ملف العيادة والفرع الأول تلقائياً</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              <span>تفعيل صلاحيات المدير (Manager) فوراً</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              <span>نقل مباشر وآمن إلى لوحة تحكم ERP</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-white/10 text-xs text-blue-200">
+          هل لديك حساب بالفعل؟ 
+          <a [href]="loginUrl" class="text-white font-bold underline hover:text-blue-100 transition-colors">تسجيل الدخول</a>
+        </div>
+
+      </div>
+
+      <!-- العمود الأيسر: فورم التسجيل (7 أعمدة) -->
+      <div class="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-center relative">
+        
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-bold text-[#122056]">
+            إنشاء حساب العيادة الجديد
+          </h2>
+          <p class="text-gray-500 text-sm mt-1">
+            أدخل بياناتك الأساسية للبدء في إدارة عيادتك بذكاء.
+          </p>
+        </div>
+
+        <!-- رسالة الخطأ العامة إن حدثت -->
+        @if (errorMessage) {
+          <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3 animate-shake">
+            <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>
+            <div class="font-semibold">{{ errorMessage }}</div>
+          </div>
+        }
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          
+          <!-- اسم الطبيب / المسؤول -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">
+              اسم الطبيب / المدير المسؤول <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <input 
+                type="text" 
+                formControlName="fullName"
+                placeholder="د. محمد أحمد"
+                class="w-full px-4 py-3 rounded-xl border bg-gray-50 text-gray-800 text-sm focus:bg-white focus:outline-none transition-colors"
+                [class.border-red-400]="isFieldInvalid('fullName')"
+                [class.border-gray-200]="!isFieldInvalid('fullName')"
+                [class.focus:border-[#5B65DC]]="!isFieldInvalid('fullName')"
+              />
+            </div>
+            @if (isFieldInvalid('fullName')) {
+              <div class="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                <span>{{ getFieldError('fullName')?.ar }}</span>
+                <span class="text-gray-400 text-[10px]">({{ getFieldError('fullName')?.en }})</span>
+              </div>
+            }
+          </div>
+
+          <!-- اسم العيادة / المركز -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">
+              اسم العيادة أو المركز الطبي <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <input 
+                type="text" 
+                formControlName="clinicName"
+                placeholder="عيادة النور التخصصية"
+                class="w-full px-4 py-3 rounded-xl border bg-gray-50 text-gray-800 text-sm focus:bg-white focus:outline-none transition-colors"
+                [class.border-red-400]="isFieldInvalid('clinicName')"
+                [class.border-gray-200]="!isFieldInvalid('clinicName')"
+                [class.focus:border-[#5B65DC]]="!isFieldInvalid('clinicName')"
+              />
+            </div>
+            @if (isFieldInvalid('clinicName')) {
+              <div class="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                <span>{{ getFieldError('clinicName')?.ar }}</span>
+                <span class="text-gray-400 text-[10px]">({{ getFieldError('clinicName')?.en }})</span>
+              </div>
+            }
+          </div>
+
+          <!-- البريد الإلكتروني ورقم الهاتف (صف واحد على الشاشات الكبيرة) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- البريد الإلكتروني -->
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">
+                البريد الإلكتروني <span class="text-red-500">*</span>
+              </label>
+              <input 
+                type="email" 
+                formControlName="email"
+                placeholder="doctor@clinic.com"
+                dir="ltr"
+                class="w-full px-4 py-3 rounded-xl border bg-gray-50 text-gray-800 text-sm focus:bg-white focus:outline-none transition-colors text-right"
+                [class.border-red-400]="isFieldInvalid('email')"
+                [class.border-gray-200]="!isFieldInvalid('email')"
+                [class.focus:border-[#5B65DC]]="!isFieldInvalid('email')"
+              />
+              @if (isFieldInvalid('email')) {
+                <div class="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                  <span>{{ getFieldError('email')?.ar }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- رقم الهاتف -->
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">
+                رقم الهاتف المحمول <span class="text-gray-400 font-normal">(اختياري)</span>
+              </label>
+              <input 
+                type="tel" 
+                formControlName="phone"
+                placeholder="01012345678"
+                dir="ltr"
+                class="w-full px-4 py-3 rounded-xl border bg-gray-50 text-gray-800 text-sm focus:bg-white focus:outline-none transition-colors text-right"
+                [class.border-red-400]="isFieldInvalid('phone')"
+                [class.border-gray-200]="!isFieldInvalid('phone')"
+                [class.focus:border-[#5B65DC]]="!isFieldInvalid('phone')"
+              />
+              @if (isFieldInvalid('phone')) {
+                <div class="text-xs text-red-600 mt-1 font-medium">
+                  {{ getFieldError('phone')?.ar }}
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- كلمة المرور -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">
+              كلمة المرور (8 أحرف على الأقل) <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                formControlName="password"
+                placeholder="••••••••"
+                dir="ltr"
+                class="w-full px-4 py-3 pl-12 rounded-xl border bg-gray-50 text-gray-800 text-sm focus:bg-white focus:outline-none transition-colors text-right"
+                [class.border-red-400]="isFieldInvalid('password')"
+                [class.border-gray-200]="!isFieldInvalid('password')"
+                [class.focus:border-[#5B65DC]]="!isFieldInvalid('password')"
+              />
+              <button 
+                type="button" 
+                (click)="togglePasswordVisibility()"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none p-1">
+                @if (showPassword) {
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                  </svg>
+                } @else {
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                }
+              </button>
+            </div>
+            @if (isFieldInvalid('password')) {
+              <div class="text-xs text-red-600 mt-1 flex items-center gap-1 font-medium">
+                <span>{{ getFieldError('password')?.ar }}</span>
+                <span class="text-gray-400 text-[10px]">({{ getFieldError('password')?.en }})</span>
+              </div>
+            }
+          </div>
+
+          <!-- الموافقة على الشروط -->
+          <div class="pt-2">
+            <label class="flex items-start gap-2.5 cursor-pointer select-none">
+              <input 
+                type="checkbox" 
+                formControlName="terms"
+                class="mt-1 w-4 h-4 rounded accent-[#5B65DC] border-gray-300 cursor-pointer"
+              />
+              <span class="text-xs text-gray-600 leading-relaxed">
+                أوافق على <a href="#" class="text-[#5B65DC] font-semibold underline">شروط الاستخدام</a> و<a href="#" class="text-[#5B65DC] font-semibold underline">سياسة الخصوصية</a> وبدء فترة التجربة المجانية.
+              </span>
+            </label>
+            @if (isFieldInvalid('terms')) {
+              <div class="text-xs text-red-600 mt-1 font-medium">
+                {{ getFieldError('terms')?.ar }}
+              </div>
+            }
+          </div>
+
+          <!-- زر الإرسال -->
+          <button 
+            type="submit" 
+            [disabled]="submitting"
+            class="w-full mt-4 py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white font-bold text-base hover:opacity-95 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
+            @if (submitting) {
+              <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>جاري إنشاء العيادة...</span>
+            } @else {
+              <span>ابدأ نسختك المجانية الآن</span>
+              <svg class="w-5 h-5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            }
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- شاشة التحويل التلقائي SSO Handoff Modal Overlay -->
+  @if (successSso) {
+    <div class="fixed inset-0 z-50 bg-[#122056]/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+      <div class="bg-white rounded-3xl p-8 sm:p-10 max-w-md w-full text-center shadow-2xl border border-gray-100 animate-scale-up">
+        
+        <!-- أيقونة النجاح والسبينر -->
+        <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+          <div class="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
+          <svg class="w-10 h-10 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <h3 class="text-2xl font-black text-[#122056] mb-2">
+          تم إنشاء عيادتك بنجاح!
+        </h3>
+        
+        <p class="text-gray-600 text-sm mb-6 leading-relaxed">
+          جاري تجهيز بيئة العمل ونقلك تلقائياً إلى لوحة تحكم Algor Clinic ERP...
+        </p>
+
+        <div class="bg-blue-50 text-[#5B65DC] px-4 py-2.5 rounded-xl text-xs font-semibold inline-flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-[#5B65DC] animate-ping"></span>
+          التحويل الفوري (Single Sign-On)...
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>
