@@ -69,11 +69,14 @@ export class HomePricing implements OnInit {
 
   choosePlan(planId?: string): void {
     if (planId) {
-      this.router.navigate(['/register'], {
-        queryParams: { planId },
+      this.router.navigate(['/checkout'], {
+        queryParams: {
+          planId,
+          billingCycle: this.isYearly ? 'yearly' : 'monthly',
+        },
       });
     } else {
-      this.router.navigate(['/register']);
+      this.router.navigate(['/checkout']);
     }
   }
 

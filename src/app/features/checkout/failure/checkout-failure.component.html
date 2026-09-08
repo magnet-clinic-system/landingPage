@@ -1,0 +1,67 @@
+<div class="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-body" dir="rtl">
+  
+  <div class="max-w-lg w-full mx-auto">
+    
+    <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-gray-100 text-center relative overflow-hidden">
+      
+      <!-- شريط علوي بلون الخطأ -->
+      <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-red-500 via-rose-500 to-red-600"></div>
+
+      <!-- أيقونة الفشل -->
+      <div class="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-black text-[#122056] mb-2">
+        تعذر إتمام عملية الدفع
+      </h1>
+
+      <p class="text-sm text-gray-500 mb-6 leading-relaxed">
+        نأسف، لم نتمكن من إتمام عملية السداد لترقية الباقة. لم يتم خصم أي مبالغ من حسابك.
+      </p>
+
+      <!-- صندوق تفاصيل سبب الفشل -->
+      <div class="bg-red-50/70 rounded-2xl p-4 mb-8 text-right text-xs text-red-800 border border-red-200/80">
+        <div class="font-bold mb-1">السبب المحتمل:</div>
+        <p class="text-red-700 leading-relaxed">{{ errorMessage }}</p>
+        @if (paymentId) {
+          <div class="mt-2 pt-2 border-t border-red-200 text-[11px] text-red-600 font-mono" dir="ltr">
+            Ref: {{ paymentId }}
+          </div>
+        }
+      </div>
+
+      <!-- أزرار الإجراءات -->
+      <div class="space-y-3">
+        <a 
+          routerLink="/checkout"
+          [queryParams]="planId ? { planId: planId } : null"
+          class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white font-bold text-sm hover:opacity-95 shadow-lg transition-all flex items-center justify-center gap-2">
+          <span>إعادة المحاولة / اختيار وسيلة أخرى</span>
+          <svg class="w-4 h-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </a>
+
+        <a 
+          routerLink="/"
+          class="w-full py-3 rounded-2xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+          <span>العودة للرئيسية</span>
+        </a>
+      </div>
+
+      <!-- الدعم الفني -->
+      <div class="mt-6 pt-6 border-t border-gray-100 text-xs text-gray-500">
+        هل تحتاج لمساعدة؟ تواصل مع فريق المبيعات عبر واتساب:
+        <a href="https://wa.me/201000000000" target="_blank" class="text-[#5B65DC] font-bold hover:underline inline-block mr-1">
+          دعم Algor Clinic
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

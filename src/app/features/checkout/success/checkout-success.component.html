@@ -1,0 +1,84 @@
+<div class="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-body" dir="rtl">
+  
+  <div class="max-w-lg w-full mx-auto">
+    
+    <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-gray-100 text-center relative overflow-hidden">
+      
+      <!-- نقش جمالي علوي -->
+      <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-600"></div>
+
+      <!-- أيقونة النجاح الاحتفالية -->
+      <div class="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+        <div class="absolute inset-0 rounded-full border-4 border-emerald-400/30 animate-ping"></div>
+        <svg class="w-10 h-10 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-black text-[#122056] mb-2">
+        تم تفعيل اشتراك عيادتك بنجاح!
+      </h1>
+
+      <p class="text-sm text-gray-500 mb-8 leading-relaxed">
+        شكراً لاختيارك Algor Clinic. تم تأكيد الدفع وتحديث حدود وصلاحيات عيادتك الطبية فورياً.
+      </p>
+
+      <!-- تفاصيل المعاملة -->
+      <div class="bg-gray-50 rounded-2xl p-5 mb-8 text-right space-y-3 text-xs text-gray-600 border border-gray-200/60">
+        <div class="flex items-center justify-between pb-2 border-b border-gray-200/60">
+          <span>حالة الاشتراك</span>
+          <span class="font-bold text-emerald-600 bg-emerald-100/60 px-2.5 py-0.5 rounded-full">نشط ومفعل ✓</span>
+        </div>
+        @if (loadingDetails) {
+          <div class="py-2 text-center text-gray-400 text-xs animate-pulse">
+            جاري تأكيد تفاصيل العملية...
+          </div>
+        } @else if (paymentDetails) {
+          <div class="flex items-center justify-between">
+            <span>المبلغ المسدد</span>
+            <span class="font-bold text-[#122056]">{{ paymentDetails.amount }} جنيه مصري</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span>وسيلة الدفع</span>
+            <span class="font-medium text-gray-700">{{ paymentDetails.paymentMethod }}</span>
+          </div>
+        }
+        @if (paymentId) {
+          <div class="flex items-center justify-between text-[11px] text-gray-400 pt-1">
+            <span>رقم العملية المرجعي</span>
+            <span class="font-mono text-gray-600" dir="ltr">{{ paymentId }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- زر الانتقال الفوري للـ ERP -->
+      <button 
+        type="button" 
+        (click)="goToErp()"
+        class="w-full py-4 rounded-2xl bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white font-extrabold text-base hover:opacity-95 shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer">
+        <span>الدخول إلى لوحة تحكم العيادة (ERP)</span>
+        <svg class="w-5 h-5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </button>
+
+      <!-- العداد التنازلي للتوجيه التلقائي -->
+      <div class="mt-4 text-xs text-gray-400 flex items-center justify-center gap-2">
+        @if (countdownInterval) {
+          <span>سيتم التوجيه تلقائياً خلال {{ countdown }} ثوانٍ...</span>
+          <button 
+            type="button" 
+            (click)="stopAutoRedirect()"
+            class="text-[#5B65DC] hover:underline font-bold cursor-pointer">
+            إيقاف
+          </button>
+        } @else {
+          <span class="text-gray-500">تم إيقاف التوجيه التلقائي. يمكنك الدخول يدوياً عبر الزر أعلاه.</span>
+        }
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

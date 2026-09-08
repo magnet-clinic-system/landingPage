@@ -10,6 +10,27 @@ export const routes: Routes = [
         (m) => m.RegisterComponent
       ),
   },
+  {
+    path: 'checkout',
+    loadComponent: () =>
+      import('./features/checkout/checkout.component').then(
+        (m) => m.CheckoutComponent
+      ),
+  },
+  {
+    path: 'checkout/success',
+    loadComponent: () =>
+      import('./features/checkout/success/checkout-success.component').then(
+        (m) => m.CheckoutSuccessComponent
+      ),
+  },
+  {
+    path: 'checkout/failure',
+    loadComponent: () =>
+      import('./features/checkout/failure/checkout-failure.component').then(
+        (m) => m.CheckoutFailureComponent
+      ),
+  },
   { path: '**', redirectTo: '' },
 ];
 
