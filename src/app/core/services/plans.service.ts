@@ -53,14 +53,14 @@ export class PlansService {
     if (key.startsWith('TRIAL')) {
       return { ar: 'باقة التجربة المجانية', en: '14-Day Free Trial' };
     }
-    if (key.startsWith('BASIC')) {
-      return { ar: 'طبيب فردي / عيادة أساسية', en: 'Basic Solo Practice' };
+    if (key.startsWith('BASIC') || key.startsWith('STARTER')) {
+      return { ar: 'الأساسية (Starter) — عيادة فردية', en: 'Starter Solo Practice' };
     }
     if (key.startsWith('PRO')) {
-      return { ar: 'العيادة المتقدمة', en: 'Professional Clinic' };
+      return { ar: 'المتقدمة (Professional) — مجمعات طبية', en: 'Professional Polyclinics' };
     }
     if (key.startsWith('ENTERPRISE')) {
-      return { ar: 'المراكز والمستشفيات', en: 'Enterprise Network' };
+      return { ar: 'المؤسسية (Enterprise) — سلاسل العيادات الكبرى', en: 'Enterprise Network' };
     }
     return { ar: name, en: name };
   }

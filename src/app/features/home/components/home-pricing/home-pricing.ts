@@ -52,18 +52,20 @@ export class HomePricing implements OnInit {
 
     if (this.isYearly) {
       // Annual plans (>= 300 days)
-      return standardPlans
-        .filter((p) => p.durationDays >= 300)
-        .sort((a, b) => a.price - b.price);
+      const annual = standardPlans.filter((p) => p.durationDays >= 300);
+      return annual.sort((a, b) => {
+        const order = ['BASIC', 'PRO', 'ENTERPRISE'];
+        const getIndex = (name: string) => order.findIndex((k) => name.toUpperCase().includes(k));
+        return getIndex(a.name) - getIndex(b.name);
+      });
     } else {
       // Monthly plans (<= 31 days)
       const monthly = standardPlans.filter((p) => p.durationDays <= 31);
-      // Include Enterprise if present in database for institutional clients
-      const enterprise = standardPlans.find((p) => p.name.toUpperCase().includes('ENTERPRISE'));
-      if (enterprise && !monthly.some((p) => p.id === enterprise.id)) {
-        return [...monthly.sort((a, b) => a.price - b.price), enterprise];
-      }
-      return monthly.sort((a, b) => a.price - b.price);
+      return monthly.sort((a, b) => {
+        const order = ['BASIC', 'PRO', 'ENTERPRISE'];
+        const getIndex = (name: string) => order.findIndex((k) => name.toUpperCase().includes(k));
+        return getIndex(a.name) - getIndex(b.name);
+      });
     }
   }
 
@@ -80,46 +82,53 @@ export class HomePricing implements OnInit {
     }
   }
 
+  isEnterprise(plan: Plan): boolean {
+    return plan.name.toUpperCase().includes('ENTERPRISE');
+  }
+
+  isCustomPricing(plan: Plan): boolean {
+    return this.isEnterprise(plan) && (this.isYearly || Number(plan.price) === 0 || plan.durationDays >= 300);
+  }
+
   getPlanArabicTitle(name: string): string {
     const key = name.toUpperCase();
-    if (key.includes('BASIC')) return 'طبيب فردي';
-    if (key.includes('PRO')) return 'العيادة الذكية';
-    if (key.includes('ENTERPRISE')) return 'مستشفى / مجمع طبي';
+    if (key.includes('BASIC') || key.includes('STARTER')) return 'الأساسية (Starter)';
+    if (key.includes('PRO')) return 'المتقدمة (Professional)';
+    if (key.includes('ENTERPRISE')) return 'المؤسسية (Enterprise)';
     return name;
   }
 
   getPlanArabicSubtitle(plan: Plan): string {
-    if (plan.description) return plan.description;
     const key = plan.name.toUpperCase();
-    if (key.includes('BASIC')) return 'طبيب فردي مع موظف استقبال — البداية الرقمية الأسهل';
-    if (key.includes('PRO')) return 'الخيار الأمثل للعيادات النشطة والمتطورة';
-    if (key.includes('ENTERPRISE')) return 'حلول متكاملة للمجمعات الطبية متعددة التخصصات';
-    return 'خطة متكاملة لإدارة عيادتك الطبية';
+    if (key.includes('BASIC') || key.includes('STARTER')) return 'الفئة المستهدفة: عيادة فردية';
+    if (key.includes('PRO')) return 'الفئة المستهدفة: مجمعات طبية (Polyclinics)';
+    if (key.includes('ENTERPRISE')) return 'الفئة المستهدفة: سلاسل العيادات الكبرى';
+    return plan.description || '';
   }
 
   getPlanFeatures(plan: Plan): string[] {
     const features: string[] = [];
-
-    features.push(`${plan.maxUsers} ${plan.maxUsers > 1 ? 'مستخدمين / أطباء' : 'مستخدم واحد'}`);
-    features.push(`${plan.maxBranches} ${plan.maxBranches > 1 ? 'فروع طبية' : 'فرع واحد'}`);
-    
     const key = plan.name.toUpperCase();
-    if (key.includes('BASIC')) {
-      features.push('إدارة المواعيد وسجلات المرضى');
-      features.push('الفواتير والتقارير المالية الأساسية');
-      features.push('١٠٠ رصيد ذكاء اصطناعي / شهر');
+
+    if (key.includes('BASIC') || key.includes('STARTER')) {
+      features.push('فرع واحد فقط');
+      features.push('إدارة مواعيد وفواتير أساسية');
+      features.push('بوابة حجز للمرضى (agent-web)');
+      features.push('تقارير مبسطة');
     } else if (key.includes('PRO')) {
-      features.push('ملف تخصص طبي متكامل');
+      features.push('حتى 3 فروع');
+      features.push('تفعيل صارم للصلاحيات (RBAC)');
+      features.push('عزل تام لبيانات موظفي الاستقبال');
+      features.push('السجل المالي غير القابل للحذف');
       features.push('تكامل واتساب لإشعارات وتذكير المرضى');
       features.push('روشتة إلكترونية ذكية وطباعة فورية');
-      features.push('١,٠٠٠ رصيد ذكاء اصطناعي / شهر');
-      features.push('دعم فني مخصص وأولوية في الاستجابة');
     } else if (key.includes('ENTERPRISE')) {
+      features.push('فروع غير محدودة');
+      features.push('لوحة تحكم الإدارة العليا (saas)');
+      features.push('استضافة مخصصة');
+      features.push('أولوية في الدعم الفني 24/7');
       features.push('قنوات واتساب غير محدودة');
-      features.push('إدارة الصلاحيات المتقدمة لكل موظف');
-      features.push('تكامل API كامل وترحيل بيانات العيادة');
       features.push('اتفاقية مستوى خدمة SLA وضمان التشغيل');
-      features.push('تدريب مباشر لطاقم العمل ومدير حساب مخصص');
     } else {
       features.push('كافة مميزات النظام الأساسية');
       features.push('تحديثات أمان مستمرة ونسخ احتياطي يومي');

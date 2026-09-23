@@ -299,9 +299,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   getPlanArabicTitle(name: string): string {
     const key = name.toUpperCase();
-    if (key.includes('BASIC')) return 'طبيب فردي';
-    if (key.includes('PRO')) return 'العيادة الذكية المتكاملة';
-    if (key.includes('ENTERPRISE')) return 'مستشفى / مجمع طبي';
+    if (key.includes('BASIC') || key.includes('STARTER')) return 'الأساسية (Starter)';
+    if (key.includes('PRO')) return 'المتقدمة (Professional)';
+    if (key.includes('ENTERPRISE')) return 'المؤسسية (Enterprise)';
     return name;
   }
 }
