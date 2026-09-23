@@ -1,0 +1,380 @@
+<div class="min-h-screen bg-[#F8FAFC] py-10 px-4 sm:px-6 lg:px-8 font-body" dir="rtl">
+  
+  <div class="max-w-6xl mx-auto">
+    
+    <!-- الشريط العلوي -->
+    <div class="flex items-center justify-between mb-8">
+      <a routerLink="/#pricing" class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-[#122056] transition-colors bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
+        <svg class="w-4 h-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>العودة للباقات</span>
+      </a>
+
+      <div class="text-xl font-black text-[#122056]">
+        Algor<span class="text-[#5B65DC]">Clinic</span> <span class="text-xs text-gray-400 font-medium">بوابة السداد الآمن</span>
+      </div>
+    </div>
+
+    <!-- شبكة الـ Checkout (Split Screen) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- العمود الأيمن: وسائل الدفع وبيانات الفوترة (7 أعمدة) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- رسالة الخطأ إن وجدت -->
+        @if (errorMessage) {
+          <div class="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3 animate-shake">
+            <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>
+            <div class="font-semibold">{{ errorMessage }}</div>
+          </div>
+        }
+
+        <!-- بيانات العيادة (تسجيل سريع إذا لم يكن مسجلاً) -->
+        @if (!isAuthenticated) {
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+              <div>
+                <h2 class="text-lg font-bold text-[#122056]">1. بيانات العيادة والمسؤول</h2>
+                <p class="text-xs text-gray-400">سيتم إنشاء حسابك وتفعيل العيادة فور إتمام الدفع</p>
+              </div>
+              <a [href]="loginUrl" class="text-xs font-bold text-[#5B65DC] hover:underline">
+                لديك حساب؟ تسجيل الدخول
+              </a>
+            </div>
+
+            <form [formGroup]="quickRegisterForm" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-gray-700 mb-1">اسم الطبيب / المدير <span class="text-red-500">*</span></label>
+                  <input type="text" formControlName="fullName" placeholder="د. أحمد محمود"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:bg-white focus:outline-none focus:border-[#5B65DC] transition-colors" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-gray-700 mb-1">اسم العيادة أو المركز <span class="text-red-500">*</span></label>
+                  <input type="text" formControlName="clinicName" placeholder="عيادة الشفاء"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:bg-white focus:outline-none focus:border-[#5B65DC] transition-colors" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-gray-700 mb-1">البريد الإلكتروني <span class="text-red-500">*</span></label>
+                  <input type="email" formControlName="email" placeholder="doctor@clinic.com" dir="ltr"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:bg-white focus:outline-none focus:border-[#5B65DC] transition-colors text-right" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-gray-700 mb-1">كلمة المرور <span class="text-red-500">*</span></label>
+                  <input type="password" formControlName="password" placeholder="••••••••" dir="ltr"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:bg-white focus:outline-none focus:border-[#5B65DC] transition-colors text-right" />
+                </div>
+              </div>
+            </form>
+          </div>
+        } @else {
+          <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-emerald-900">حساب العيادة مسجل ونشط</div>
+                <div class="text-xs text-emerald-700">سيتم ربط وتفعيل ترقية الاشتراك فور تأكيد الدفع</div>
+              </div>
+            </div>
+            <span class="text-xs font-bold bg-emerald-200/60 text-emerald-800 px-2.5 py-1 rounded-full">جاهز للسداد</span>
+          </div>
+        }
+
+        <!-- اختيار وسيلة الدفع -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm">
+          <h2 class="text-lg font-bold text-[#122056] mb-2">2. اختر وسيلة الدفع المناسبة</h2>
+          <p class="text-xs text-gray-400 mb-6">جميع المعاملات المالية مشفرة وآمنة عبر بوابة Paymob المعتمدة من البنك المركزي المصري</p>
+
+          <!-- كروت وسائل الدفع الثلاث -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-6">
+            
+            <!-- 1. البطاقة البنكية -->
+            <button 
+              type="button"
+              (click)="setPaymentMethod('CARD')"
+              [class.border-[#5B65DC]]="selectedPaymentMethod === 'CARD'"
+              [class.bg-blue-50/30]="selectedPaymentMethod === 'CARD'"
+              [class.border-gray-200]="selectedPaymentMethod !== 'CARD'"
+              class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
+              <div class="flex items-center justify-between w-full mb-3">
+                <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+                  [class.border-[#5B65DC]]="selectedPaymentMethod === 'CARD'"
+                  [class.border-gray-300]="selectedPaymentMethod !== 'CARD'">
+                  @if (selectedPaymentMethod === 'CARD') {
+                    <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
+                  }
+                </span>
+                <span class="text-xs font-black text-gray-400">Visa / Master</span>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-[#122056]">بطاقة بنكية</div>
+                <div class="text-[11px] text-gray-500 mt-0.5">فيزا، ماستركارد، ميزة</div>
+              </div>
+            </button>
+
+            <!-- 2. المحافظ الإلكترونية -->
+            <button 
+              type="button"
+              (click)="setPaymentMethod('WALLET')"
+              [class.border-[#5B65DC]]="selectedPaymentMethod === 'WALLET'"
+              [class.bg-blue-50/30]="selectedPaymentMethod === 'WALLET'"
+              [class.border-gray-200]="selectedPaymentMethod !== 'WALLET'"
+              class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
+              <div class="flex items-center justify-between w-full mb-3">
+                <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+                  [class.border-[#5B65DC]]="selectedPaymentMethod === 'WALLET'"
+                  [class.border-gray-300]="selectedPaymentMethod !== 'WALLET'">
+                  @if (selectedPaymentMethod === 'WALLET') {
+                    <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
+                  }
+                </span>
+                <span class="text-xs font-black text-red-500">كاش</span>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-[#122056]">محفظة إلكترونية</div>
+                <div class="text-[11px] text-gray-500 mt-0.5">فودافون كاش، أورنج، اتصالات، WE</div>
+              </div>
+            </button>
+
+            <!-- 3. فوري -->
+            <button 
+              type="button"
+              (click)="setPaymentMethod('FAWRY')"
+              [class.border-[#5B65DC]]="selectedPaymentMethod === 'FAWRY'"
+              [class.bg-blue-50/30]="selectedPaymentMethod === 'FAWRY'"
+              [class.border-gray-200]="selectedPaymentMethod !== 'FAWRY'"
+              class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
+              <div class="flex items-center justify-between w-full mb-3">
+                <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+                  [class.border-[#5B65DC]]="selectedPaymentMethod === 'FAWRY'"
+                  [class.border-gray-300]="selectedPaymentMethod !== 'FAWRY'">
+                  @if (selectedPaymentMethod === 'FAWRY') {
+                    <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
+                  }
+                </span>
+                <span class="text-xs font-black text-amber-600">فوري</span>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-[#122056]">فوري باي (Fawry)</div>
+                <div class="text-[11px] text-gray-500 mt-0.5">الدفع نقداً في أي منفذ</div>
+              </div>
+            </button>
+
+          </div>
+
+          <!-- تفاصيل وسيلة الدفع المحددة -->
+          @if (selectedPaymentMethod === 'CARD') {
+            <div class="p-4 rounded-2xl bg-gray-50 border border-gray-200/60 text-xs text-gray-600 flex items-center gap-3">
+              <svg class="w-6 h-6 text-[#5B65DC] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span>عند تأكيد الطلب، ستفتح نافذة الدفع الآمن لإدخال بيانات بطاقتك وتأكيد كود الـ OTP البنكي.</span>
+            </div>
+          }
+
+          @if (selectedPaymentMethod === 'WALLET') {
+            <div [formGroup]="walletForm" class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100 space-y-3">
+              <label class="block text-xs font-bold text-gray-700">رقم محفظة المحمول المسجلة (فودافون كاش / اتصالات / أورنج / وي) <span class="text-red-500">*</span></label>
+              <input 
+                type="tel" 
+                formControlName="phone"
+                placeholder="01012345678" 
+                dir="ltr"
+                class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-sm focus:outline-none focus:border-[#5B65DC] text-right"
+              />
+              <p class="text-[11px] text-gray-500">سيتم إرسال طلب تأكيد الخصم وإدخال الرقم السري لمحفظتك فور الضغط على تأكيد.</p>
+            </div>
+          }
+
+          @if (selectedPaymentMethod === 'FAWRY' && fawryCode) {
+            <div class="p-5 rounded-2xl bg-amber-50 border border-amber-200 text-center space-y-3 animate-scale-up">
+              <div class="text-xs font-bold text-amber-800">تم إصدار كود السداد عبر فوري بنجاح:</div>
+              <div class="text-2xl sm:text-3xl font-black text-[#122056] tracking-wider bg-white py-2.5 px-6 rounded-xl border border-amber-300 inline-block">
+                {{ fawryCode }}
+              </div>
+              <div>
+                <button 
+                  type="button" 
+                  (click)="copyFawryCode()"
+                  class="text-xs font-bold px-4 py-1.5 rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors">
+                  {{ fawryCopied ? 'تم النسخ بنجاح ✓' : 'نسخ كود السداد' }}
+                </button>
+              </div>
+              <p class="text-xs text-gray-600 leading-relaxed">
+                توجّه لأي فرع فوري أو تاجر معتمد واطلب سداد خدمة <strong>فوري باي (Fawry Pay)</strong> باستخدام الكود أعلاه خلال 48 ساعة. سيتم تفعيل العيادة تلقائياً فور السداد.
+              </p>
+            </div>
+          }
+
+          <!-- زر تأكيد الطلب والسداد -->
+          <button 
+            type="button" 
+            (click)="confirmPayment()"
+            [disabled]="isProcessing || loadingPlan"
+            class="w-full mt-6 py-4 rounded-2xl bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white font-extrabold text-base hover:opacity-95 shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+            @if (isProcessing) {
+              <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>جاري تجهيز بوابة السداد...</span>
+            } @else {
+              <span>تأكيد ومتابعة الدفع ({{ totalAmount }} ج.م)</span>
+              <svg class="w-5 h-5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            }
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- العمود الأيسر: كارت ملخص الطلب والتفاصيل (5 أعمدة) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- ملخص الطلب -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm relative overflow-hidden">
+          
+          <div class="text-xs uppercase tracking-wider text-gray-400 font-bold mb-2">ملخص الفاتورة</div>
+          
+          @if (loadingPlan) {
+            <div class="animate-pulse space-y-4 my-6">
+              <div class="h-6 bg-gray-200 rounded w-1/2"></div>
+              <div class="h-4 bg-gray-100 rounded w-3/4"></div>
+              <div class="h-8 bg-gray-200 rounded w-1/3"></div>
+            </div>
+          } @else if (selectedPlan) {
+            <div class="border-b border-gray-100 pb-5 mb-5">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xl font-extrabold text-[#122056]">
+                  {{ getPlanArabicTitle(selectedPlan.name) }}
+                </h3>
+                @if (selectedPlan.isHot) {
+                  <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+                    الأكثر طلباً
+                  </span>
+                }
+              </div>
+              <p class="text-xs text-gray-500 mt-1">
+                دورة الفوترة: <strong>{{ isYearly ? 'سنوية (365 يوماً)' : 'شهرية (30 يوماً)' }}</strong>
+              </p>
+            </div>
+
+            <!-- تفاصيل الرسوم -->
+            <div class="space-y-3 text-sm text-gray-600 border-b border-gray-100 pb-5 mb-5">
+              <div class="flex items-center justify-between">
+                <span>سعر الباقة الأساسي</span>
+                <span class="font-bold text-[#122056]">{{ selectedPlan.price }} ج.م</span>
+              </div>
+              @if (selectedPlan.discountPercentage > 0) {
+                <div class="flex items-center justify-between text-emerald-600">
+                  <span>خصم الباقة الترويجي ({{ selectedPlan.discountPercentage }}%)</span>
+                  <span>مطبّق ومشمول</span>
+                </div>
+              }
+              <div class="flex items-center justify-between text-xs text-gray-400">
+                <span>ضريبة القيمة المضافة ومصاريف البوابة</span>
+                <span>٠٫٠٠ ج.م (شاملة)</span>
+              </div>
+            </div>
+
+            <!-- الإجمالي النهائي -->
+            <div class="flex items-baseline justify-between pt-1">
+              <div>
+                <span class="text-xs text-gray-400 block">الإجمالي المستحق للسداد</span>
+                <span class="text-2xl sm:text-3xl font-black text-[#122056]">{{ totalAmount }}</span>
+                <span class="text-xs font-bold text-gray-500 mr-1">جنيه مصري</span>
+              </div>
+              <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                تفعيل فوري
+              </span>
+            </div>
+          }
+
+          <!-- ميزات الضمان والأمان -->
+          <div class="mt-6 pt-6 border-t border-gray-100 space-y-3 text-xs text-gray-500">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <span>ضمان استرجاع الأموال خلال 14 يوماً من تاريخ الترقية</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <span>اتصال مشفر 256-Bit SSL وفق معايير PCI-DSS العالمية</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- نافذة Paymob Iframe Modal المنبثقة لسداد الكروت -->
+  @if (showIframeModal && safeIframeUrl) {
+    <div class="fixed inset-0 z-50 bg-[#122056]/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 animate-fade-in">
+      <div class="bg-white rounded-3xl max-w-2xl w-full h-[620px] flex flex-col overflow-hidden shadow-2xl border border-gray-100 animate-scale-up">
+        
+        <!-- هيدر المودال -->
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <span class="text-sm font-bold text-[#122056]">بوابة الدفع الآمن Paymob</span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button 
+              type="button" 
+              (click)="openIframeInNewTab()"
+              class="text-xs text-[#5B65DC] font-bold hover:underline">
+              فتح في نافذة خارجية
+            </button>
+            <button 
+              type="button" 
+              (click)="closeIframeModal()"
+              class="text-gray-400 hover:text-gray-600 p-1">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- الـ Iframe المضمّن -->
+        <div class="flex-1 w-full h-full relative bg-gray-100">
+          <iframe 
+            [src]="safeIframeUrl" 
+            class="w-full h-full border-0" 
+            title="Paymob Payment Terminal">
+          </iframe>
+        </div>
+
+        <!-- فوتر المودال -->
+        <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+          <span>بعد إتمام الدفع بنجاح سيتم نقلك تلقائياً لتأكيد تفعيل العيادة.</span>
+          <a routerLink="/checkout/success" class="text-[#5B65DC] font-bold hover:underline">
+            أكملت الدفع بالفعل؟
+          </a>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

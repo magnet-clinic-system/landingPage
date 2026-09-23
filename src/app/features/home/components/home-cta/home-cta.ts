@@ -1,13 +1,19 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home-cta',
-  imports: [],
+  standalone: true,
+  imports: [FormsModule],
   templateUrl: './home-cta.html',
   styleUrl: './home-cta.css'
 })
 export class HomeCta {
+  private readonly router = inject(Router);
+  
   planeOffset = 0;
+  email = '';
 
   @HostListener('window:scroll')
   onWindowScroll() {
@@ -24,4 +30,11 @@ export class HomeCta {
       this.planeOffset = Math.max(-100, Math.min(100, offset));
     }
   }
+
+  startTrial() {
+    this.router.navigate(['/register'], {
+      queryParams: this.email ? { email: this.email.trim() } : {}
+    });
+  }
 }
+
