@@ -8,6 +8,7 @@ export interface Plan {
   name: string;
   maxUsers: number;
   maxBranches: number;
+  maxAiMessages?: number;
   price: number;
   originalPrice?: number | null;
   discountPercentage: number;
