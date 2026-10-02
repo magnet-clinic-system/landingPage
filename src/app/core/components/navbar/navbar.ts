@@ -1,6 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { environment } from '../../../../environments/environment';
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -10,6 +12,7 @@ import { RouterLink } from '@angular/router';
 })
 export class Navbar {
   isMenuOpen = signal(false);
+  erpUrl = environment.erpUrl;
 
   toggleMenu() {
     this.isMenuOpen.update(v => !v);

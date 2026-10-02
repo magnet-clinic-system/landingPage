@@ -51,30 +51,27 @@ export class PaymentService {
 
   getStoredToken(): string | null {
     try {
-      return localStorage.getItem('algor_access_token') || sessionStorage.getItem('algor_access_token');
+      return sessionStorage.getItem('algor_access_token');
     } catch {
       return null;
     }
   }
 
-  saveStoredToken(token: string, persist = true): void {
+  saveStoredToken(token: string, _persist = false): void {
     try {
-      if (persist) {
-        localStorage.setItem('algor_access_token', token);
-      } else {
-        sessionStorage.setItem('algor_access_token', token);
-      }
+      sessionStorage.setItem('algor_access_token', token);
+      localStorage.removeItem('algor_access_token');
     } catch (e) {
-      console.warn('Could not store token in browser storage', e);
+      console.warn('Could not store token in session storage', e);
     }
   }
 
   clearStoredToken(): void {
     try {
-      localStorage.removeItem('algor_access_token');
       sessionStorage.removeItem('algor_access_token');
+      localStorage.removeItem('algor_access_token');
     } catch (e) {
-      console.warn('Could not clear token from browser storage', e);
+      console.warn('Could not clear token from session storage', e);
     }
   }
 

@@ -1,4 +1,32 @@
 <app-navbar></app-navbar>
+
+<!-- Global Toast Notifications -->
+<div class="fixed top-20 right-5 z-[9999] flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+  @for (toast of notificationService.notifications(); track toast.id) {
+    <div
+      class="pointer-events-auto flex items-start gap-3 p-4 rounded-xl shadow-xl border text-sm transition-all duration-300 animate-in fade-in slide-in-from-top-2"
+      [class.bg-emerald-950]="toast.type === 'success'"
+      [class.border-emerald-700]="toast.type === 'success'"
+      [class.text-emerald-200]="toast.type === 'success'"
+      [class.bg-rose-950]="toast.type === 'error'"
+      [class.border-rose-700]="toast.type === 'error'"
+      [class.text-rose-200]="toast.type === 'error'"
+      [class.bg-amber-950]="toast.type === 'warning'"
+      [class.border-amber-700]="toast.type === 'warning'"
+      [class.text-amber-200]="toast.type === 'warning'"
+      [class.bg-slate-900]="toast.type === 'info'"
+      [class.border-slate-700]="toast.type === 'info'"
+      [class.text-slate-200]="toast.type === 'info'">
+      <div class="flex-1 font-medium leading-relaxed">{{ toast.message }}</div>
+      <button
+        (click)="notificationService.dismiss(toast.id)"
+        class="text-xs opacity-60 hover:opacity-100 transition-opacity p-1">
+        ✕
+      </button>
+    </div>
+  }
+</div>
+
 <main>
   <router-outlet />
 </main>
