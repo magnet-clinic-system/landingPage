@@ -17,6 +17,12 @@
         </div>
 
         <div class="hidden md:flex items-center gap-3 font-body">
+          <a [href]="erpUrl" class="text-[#122056] hover:text-[#5B65DC] font-bold px-3 py-2 transition-colors flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+            تسجيل الدخول
+          </a>
           <a routerLink="/register" class="bg-gradient-to-r from-[#5B65DC] to-[#122056] hover:opacity-95 text-white px-5 py-2.5 rounded-full font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
             ابدأ مجاناً 14 يوم
           </a>
@@ -52,7 +58,10 @@
           <a href="#features" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2 border-b border-gray-50">المميزات</a>
           <a href="#pricing" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2 border-b border-gray-50">الباقات</a>
           <a href="#faq" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2 border-b border-gray-50">الأسئلة الشائعة</a>
-          <a routerLink="/register" (click)="closeMenu()" class="block text-center bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white px-6 py-3 mt-4 rounded-xl font-bold transition-all shadow-md">
+          <a [href]="erpUrl" class="block text-center border border-[#5B65DC] text-[#5B65DC] hover:bg-[#5B65DC]/5 px-6 py-2.5 rounded-xl font-bold transition-all">
+            تسجيل الدخول للنظام
+          </a>
+          <a routerLink="/register" (click)="closeMenu()" class="block text-center bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md">
             ابدأ مجاناً 14 يوم
           </a>
           <a href="#subscribe" (click)="closeMenu()" class="block text-center border border-gray-200 text-[#122056] px-6 py-2.5 rounded-xl font-bold transition-all">
