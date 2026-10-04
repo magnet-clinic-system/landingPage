@@ -64,13 +64,11 @@ export class AuthService {
     }
 
     const targetUrl = new URL(baseUrl);
-
-    // ضمان إضافة مسار /login إذا لم يكن موجوداً في الرابط
     if (!targetUrl.pathname.endsWith('/login')) {
       targetUrl.pathname = targetUrl.pathname.replace(/\/$/, '') + '/login';
     }
 
-    targetUrl.searchParams.set('token', accessToken);
+    // Redirect to ERP login page without leaking the raw bearer token in URL search parameters
     window.location.href = targetUrl.toString();
   }
 }
