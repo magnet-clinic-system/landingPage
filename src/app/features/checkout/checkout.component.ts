@@ -70,16 +70,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       .subscribe((params) => {
         const queryPlanId = params.get('planId');
         const cycle = params.get('billingCycle');
-        const token = params.get('token');
 
-        if (token) {
-          this.userToken = token;
-          this.paymentService.saveStoredToken(token);
-          this.isAuthenticated = true;
-        } else {
-          this.userToken = this.paymentService.getStoredToken();
-          this.isAuthenticated = !!this.userToken;
-        }
+        this.userToken = this.paymentService.getStoredToken();
+        this.isAuthenticated = !!this.userToken;
 
         if (cycle) {
           this.isYearly = cycle.toLowerCase() === 'yearly' || cycle.toLowerCase() === 'annual';

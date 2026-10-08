@@ -49,30 +49,17 @@ export class PaymentService {
     return headers;
   }
 
+  private inMemoryToken: string | null = null;
   getStoredToken(): string | null {
-    try {
-      return sessionStorage.getItem('algor_access_token');
-    } catch {
-      return null;
-    }
+    return this.inMemoryToken;
   }
 
   saveStoredToken(token: string, _persist = false): void {
-    try {
-      sessionStorage.setItem('algor_access_token', token);
-      localStorage.removeItem('algor_access_token');
-    } catch (e) {
-      console.warn('Could not store token in session storage', e);
-    }
+    this.inMemoryToken = token;
   }
 
   clearStoredToken(): void {
-    try {
-      sessionStorage.removeItem('algor_access_token');
-      localStorage.removeItem('algor_access_token');
-    } catch (e) {
-      console.warn('Could not clear token from session storage', e);
-    }
+    this.inMemoryToken = null;
   }
 
   /**
