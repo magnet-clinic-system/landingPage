@@ -11,6 +11,7 @@ export interface RegisterPayload {
   password: string;
   phone?: string;
   planId?: string;
+  verificationTicket?: string;
 }
 
 export interface AuthResponse {
@@ -26,12 +27,42 @@ export interface AuthResponse {
   requiresOnboarding?: boolean;
 }
 
+export interface RequestEmailVerificationResponse {
+  message: string;
+  expiresInSeconds: number;
+}
+
+export interface ConfirmEmailVerificationResponse {
+  email: string;
+  verificationTicket: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
+
+  /**
+   * Request 6-digit email verification OTP before manager registration
+   */
+  requestEmailVerification(email: string): Observable<RequestEmailVerificationResponse> {
+    return this.http.post<RequestEmailVerificationResponse>(
+      `${this.apiUrl}/email-verification/request`,
+      { email: email.trim().toLowerCase() }
+    );
+  }
+
+  /**
+   * Confirm the 6-digit OTP code and receive a signed registration ticket
+   */
+  confirmEmailVerification(email: string, code: string): Observable<ConfirmEmailVerificationResponse> {
+    return this.http.post<ConfirmEmailVerificationResponse>(
+      `${this.apiUrl}/email-verification/confirm`,
+      { email: email.trim().toLowerCase(), code: code.trim() }
+    );
+  }
 
   /**
    * Register a new clinic and manager account.
@@ -45,6 +76,7 @@ export class AuthService {
       password: payload.password,
       phone: payload.phone?.trim() || undefined,
       planId: payload.planId || undefined,
+      verificationTicket: payload.verificationTicket || undefined,
     };
 
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, body, {

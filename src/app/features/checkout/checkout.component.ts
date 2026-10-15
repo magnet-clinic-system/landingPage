@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { PlansService, Plan } from '../../core/services/plans.service';
-import { PaymentService, PaymentMethod, PaymentResponse } from '../../core/services/payment.service';
+import { PaymentService, PaymentMethod, PaymentResponse, ValidateCouponResponse } from '../../core/services/payment.service';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css',
 })
@@ -42,6 +42,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   isProcessing = false;
   errorMessage: string | null = null;
+
+  // Coupon state
+  couponCodeInput = '';
+  isValidatingCoupon = false;
+  appliedCoupon: ValidateCouponResponse | null = null;
+  couponError: string | null = null;
+  couponSuccess: string | null = null;
 
   // Iframe modal for Paymob card payment
   showIframeModal = false;
@@ -117,6 +124,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.selectedPlan = plan;
         this.isYearly = plan.durationDays >= 300;
         this.loadingPlan = false;
+        // If a coupon was already entered, re-validate for the newly loaded plan
+        if (this.appliedCoupon) {
+          this.applyCoupon();
+        }
       },
       error: () => {
         this.loadDefaultPlan();
@@ -148,13 +159,65 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
   }
 
-  get totalAmount(): number {
+  get baseAmount(): number {
     if (!this.selectedPlan) return 0;
     const price = Number(this.selectedPlan.price);
     if (this.isYearly && this.selectedPlan.durationDays < 300) {
       return Math.round(price * 12 * 0.8);
     }
     return price;
+  }
+
+  get totalAmount(): number {
+    if (this.appliedCoupon) {
+      return this.appliedCoupon.finalAmount;
+    }
+    return this.baseAmount;
+  }
+
+  applyCoupon(): void {
+    if (!this.selectedPlan) {
+      this.couponError = 'يرجى اختيار باقة أولاً لتطبيق كود الخصم';
+      return;
+    }
+
+    const code = this.couponCodeInput.trim().toUpperCase();
+    if (!code) {
+      this.couponError = 'يرجى إدخال كود الخصم';
+      return;
+    }
+
+    this.isValidatingCoupon = true;
+    this.couponError = null;
+    this.couponSuccess = null;
+
+    this.paymentService
+      .validateCoupon(code, this.selectedPlan.id, this.isYearly, this.userToken || undefined)
+      .subscribe({
+        next: (res) => {
+          this.isValidatingCoupon = false;
+          if (res.valid) {
+            this.appliedCoupon = res;
+            this.couponSuccess = res.message || 'تم تطبيق كود الخصم بنجاح';
+            this.couponError = null;
+          } else {
+            this.appliedCoupon = null;
+            this.couponError = res.message || 'كود الخصم غير صالح أو منتهي الصلاحية';
+          }
+        },
+        error: (err) => {
+          this.isValidatingCoupon = false;
+          this.appliedCoupon = null;
+          this.couponError = err.error?.message || 'تعذر التحقق من كود الخصم. يرجى التأكد من صحة الكود.';
+        },
+      });
+  }
+
+  clearCoupon(): void {
+    this.couponCodeInput = '';
+    this.appliedCoupon = null;
+    this.couponError = null;
+    this.couponSuccess = null;
   }
 
   confirmPayment(): void {
@@ -169,8 +232,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }
     }
 
-    // If wallet, ensure wallet number is provided
-    if (this.selectedPaymentMethod === 'WALLET' && this.walletForm.invalid) {
+    // If wallet and not 100% free, ensure wallet number is provided
+    if (this.totalAmount > 0 && this.selectedPaymentMethod === 'WALLET' && this.walletForm.invalid) {
       this.walletForm.markAllAsTouched();
       this.errorMessage = 'يرجى إدخال رقم محفظة إلكترونية صحيح (مثال: 01012345678)';
       return;
@@ -229,6 +292,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           paymentMethod: this.selectedPaymentMethod,
           phone,
           isYearly: this.isYearly,
+          couponCode: this.appliedCoupon ? this.appliedCoupon.code : undefined,
         },
         token
       )
@@ -248,6 +312,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   private handlePaymentSuccessResponse(res: PaymentResponse): void {
+    // 100% Free checkout handling: redirect immediately to success screen without launching Paymob
+    if (res.amount === 0 || res.status === 'SUCCESSFUL' || (!res.redirectUrl && this.selectedPaymentMethod !== 'FAWRY')) {
+      this.router.navigate(['/checkout/success'], {
+        queryParams: { paymentId: res.paymentId },
+      });
+      return;
+    }
+
     if (this.selectedPaymentMethod === 'CARD') {
       if (res.redirectUrl) {
         this.rawRedirectUrl = res.redirectUrl;

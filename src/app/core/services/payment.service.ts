@@ -10,6 +10,7 @@ export interface InitiatePaymentPayload {
   paymentMethod: PaymentMethod;
   phone?: string;
   isYearly?: boolean;
+  couponCode?: string;
   idempotencyKey?: string;
 }
 
@@ -18,6 +19,7 @@ export interface UpgradePlanPayload {
   paymentMethod: PaymentMethod;
   phone?: string;
   isYearly?: boolean;
+  couponCode?: string;
   idempotencyKey?: string;
 }
 
@@ -33,12 +35,25 @@ export interface PaymentResponse {
   idempotencyKey: string;
 }
 
+export interface ValidateCouponResponse {
+  valid: boolean;
+  couponId?: string;
+  code: string;
+  discountType?: 'PERCENTAGE' | 'FIXED';
+  discountValue?: number;
+  originalAmount: number;
+  discountAmount: number;
+  finalAmount: number;
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class PaymentService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/subscription-payments`;
+  private readonly couponApiUrl = `${environment.apiUrl}/subscriptions/coupons`;
 
   private createHeaders(token?: string | null): HttpHeaders {
     let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -60,6 +75,28 @@ export class PaymentService {
 
   clearStoredToken(): void {
     this.inMemoryToken = null;
+  }
+
+  /**
+   * Validate coupon code against a specific plan
+   */
+  validateCoupon(
+    code: string,
+    planId?: string,
+    isYearly = false,
+    token?: string | null
+  ): Observable<ValidateCouponResponse> {
+    const payload = {
+      code: code.trim(),
+      planId: planId || '',
+      isYearly,
+    };
+
+    return this.http.post<ValidateCouponResponse>(
+      `${this.couponApiUrl}/validate`,
+      payload,
+      { headers: this.createHeaders(token), withCredentials: true }
+    );
   }
 
   /**
