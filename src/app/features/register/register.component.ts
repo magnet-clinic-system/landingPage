@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/services/auth.service';
@@ -10,11 +10,11 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
@@ -31,6 +31,17 @@ export class RegisterComponent {
   planId: string | null = null;
   selectedPlan: Plan | null = null;
   loadingPlan = false;
+
+  // OTP Verification States
+  showOtpModal = false;
+  otpCode = '';
+  otpSubmitting = false;
+  sendingOtp = false;
+  otpError: string | null = null;
+  otpSuccessMessage: string | null = null;
+  resendCooldown = 0;
+  private resendInterval: any = null;
+  verificationTicket: string | null = null;
 
   constructor() {
     this.registerForm = this.fb.group({
@@ -60,6 +71,11 @@ export class RegisterComponent {
       });
   }
 
+  ngOnDestroy(): void {
+    if (this.resendInterval) {
+      clearInterval(this.resendInterval);
+    }
+  }
 
   loadSelectedPlan(planId: string): void {
     this.loadingPlan = true;
@@ -79,10 +95,9 @@ export class RegisterComponent {
     this.showPassword = !this.showPassword;
   }
 
-  // Field validity helper
   isFieldInvalid(fieldName: string): boolean {
     const field = this.registerForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched || this.submitting));
+    return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
   getFieldError(fieldName: string): { ar: string; en: string } | null {
@@ -90,32 +105,20 @@ export class RegisterComponent {
     if (!field || !field.errors) return null;
 
     if (field.errors['required']) {
-      switch (fieldName) {
-        case 'fullName':
-          return { ar: 'اسم الطبيب / المدير مطلوب', en: 'Full name is required' };
-        case 'clinicName':
-          return { ar: 'اسم العيادة أو المركز الطبي مطلوب', en: 'Clinic name is required' };
-        case 'email':
-          return { ar: 'البريد الإلكتروني مطلوب', en: 'Email address is required' };
-        case 'password':
-          return { ar: 'كلمة المرور مطلوبة', en: 'Password is required' };
-        case 'terms':
-          return { ar: 'يجب الموافقة على الشروط والأحكام', en: 'You must accept the terms & conditions' };
-      }
+      return { ar: 'هذا الحقل مطلوب', en: 'This field is required' };
     }
-
-    if (field.errors['minlength']) {
-      const min = field.errors['minlength'].requiredLength;
-      if (fieldName === 'password') {
-        return { ar: `كلمة المرور يجب ألا تقل عن ${min} أحرف`, en: `Password must be at least ${min} characters` };
-      }
-      return { ar: `يجب إدخال ${min} أحرف على الأقل`, en: `Must be at least ${min} characters` };
-    }
-
     if (field.errors['email']) {
-      return { ar: 'يرجى إدخال بريد إلكتروني صحيح (مثال: doctor@clinic.com)', en: 'Please enter a valid email address' };
+      return { ar: 'يرجى إدخال بريد إلكتروني صحيح', en: 'Please enter a valid email' };
     }
-
+    if (field.errors['minlength']) {
+      return {
+        ar: `يجب أن يكون ${field.errors['minlength'].requiredLength} أحرف على الأقل`,
+        en: `Must be at least ${field.errors['minlength'].requiredLength} characters`,
+      };
+    }
+    if (field.errors['requiredTrue']) {
+      return { ar: 'يجب الموافقة على الشروط للمتابعة', en: 'Must accept terms to proceed' };
+    }
     if (field.errors['pattern'] && fieldName === 'phone') {
       return { ar: 'يرجى إدخال رقم هاتف صحيح (مثال: 01012345678 أو +201012345678)', en: 'Please enter a valid phone number' };
     }
@@ -129,6 +132,96 @@ export class RegisterComponent {
       return;
     }
 
+    if (this.verificationTicket) {
+      this.executeRegistration();
+      return;
+    }
+
+    this.requestOtp();
+  }
+
+  requestOtp(isResend = false): void {
+    const email = this.registerForm.value.email?.trim().toLowerCase();
+    if (!email) return;
+
+    this.sendingOtp = true;
+    this.errorMessage = null;
+    this.otpError = null;
+
+    this.authService.requestEmailVerification(email).subscribe({
+      next: () => {
+        this.sendingOtp = false;
+        this.showOtpModal = true;
+        this.otpSuccessMessage = isResend
+          ? 'تم إعادة إرسال رمز التحقق بنجاح.'
+          : 'تم إرسال رمز تحقق (6 أرقام) إلى بريدك الإلكتروني.';
+        this.startResendCooldown();
+      },
+      error: (err) => {
+        this.sendingOtp = false;
+        const msg = err.error?.message || 'تعذر إرسال رمز التحقق، يرجى المحاولة بعد قليل.';
+        const formatted = Array.isArray(msg) ? msg.join(' • ') : msg;
+        if (isResend) {
+          this.otpError = formatted;
+        } else {
+          this.errorMessage = formatted;
+        }
+      },
+    });
+  }
+
+  confirmOtp(): void {
+    const email = this.registerForm.value.email?.trim().toLowerCase();
+    const code = this.otpCode.trim();
+
+    if (!code || !/^[0-9]{6}$/.test(code)) {
+      this.otpError = 'يرجى إدخال رمز التحقق المكون من 6 أرقام.';
+      return;
+    }
+
+    this.otpSubmitting = true;
+    this.otpError = null;
+
+    this.authService.confirmEmailVerification(email, code).subscribe({
+      next: (res) => {
+        this.otpSubmitting = false;
+        this.verificationTicket = res.verificationTicket;
+        this.showOtpModal = false;
+        this.executeRegistration();
+      },
+      error: (err) => {
+        this.otpSubmitting = false;
+        const msg = err.error?.message;
+        this.otpError = Array.isArray(msg)
+          ? msg.join(' • ')
+          : (msg || 'رمز التحقق غير صحيح أو انتهت صلاحيته.');
+      },
+    });
+  }
+
+  closeOtpModal(): void {
+    this.showOtpModal = false;
+    this.otpCode = '';
+    this.otpError = null;
+  }
+
+  private startResendCooldown(): void {
+    this.resendCooldown = 60;
+    if (this.resendInterval) {
+      clearInterval(this.resendInterval);
+    }
+    this.resendInterval = setInterval(() => {
+      if (this.resendCooldown > 1) {
+        this.resendCooldown--;
+      } else {
+        this.resendCooldown = 0;
+        clearInterval(this.resendInterval);
+        this.resendInterval = null;
+      }
+    }, 1000);
+  }
+
+  private executeRegistration(): void {
     this.submitting = true;
     this.errorMessage = null;
 
@@ -141,15 +234,14 @@ export class RegisterComponent {
       phone: formValues.phone ? formValues.phone.trim() : undefined,
       password: formValues.password,
       planId: this.planId || undefined,
+      verificationTicket: this.verificationTicket || undefined,
     };
 
     this.authService.register(payload).subscribe({
       next: (res) => {
-        // Trigger SSO Handoff screen
         this.successSso = true;
         this.submitting = false;
 
-        // Smooth redirect to ERP with access token
         setTimeout(() => {
           this.authService.redirectToErp(res.accessToken);
         }, 1500);

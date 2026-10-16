@@ -38,7 +38,7 @@
             <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
               <div>
                 <h2 class="text-lg font-bold text-[#122056]">1. بيانات العيادة والمسؤول</h2>
-                <p class="text-xs text-gray-400">سيتم إنشاء حسابك وتفعيل العيادة فور إتمام الدفع</p>
+                <p class="text-xs text-gray-400">سيتم إنشاء حسابك وتفعيل العيادة فور إتمام العملية</p>
               </div>
               <a [href]="loginUrl" class="text-xs font-bold text-[#5B65DC] hover:underline">
                 لديك حساب؟ تسجيل الدخول
@@ -83,160 +83,196 @@
               </div>
               <div>
                 <div class="text-sm font-bold text-emerald-900">حساب العيادة مسجل ونشط</div>
-                <div class="text-xs text-emerald-700">سيتم ربط وتفعيل ترقية الاشتراك فور تأكيد الدفع</div>
+                <div class="text-xs text-emerald-700">سيتم ربط وتفعيل الاشتراك فور التأكيد</div>
               </div>
             </div>
-            <span class="text-xs font-bold bg-emerald-200/60 text-emerald-800 px-2.5 py-1 rounded-full">جاهز للسداد</span>
+            <span class="text-xs font-bold bg-emerald-200/60 text-emerald-800 px-2.5 py-1 rounded-full">جاهز للمتابعة</span>
           </div>
         }
 
-        <!-- اختيار وسيلة الدفع -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm">
-          <h2 class="text-lg font-bold text-[#122056] mb-2">2. اختر وسيلة الدفع المناسبة</h2>
-          <p class="text-xs text-gray-400 mb-6">جميع المعاملات المالية مشفرة وآمنة عبر بوابة Paymob المعتمدة من البنك المركزي المصري</p>
+        <!-- اختيار وسيلة الدفع (إذا كان الإجمالي أكبر من 0) -->
+        @if (totalAmount > 0) {
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm">
+            <h2 class="text-lg font-bold text-[#122056] mb-2">2. اختر وسيلة الدفع المناسبة</h2>
+            <p class="text-xs text-gray-400 mb-6">جميع المعاملات المالية مشفرة وآمنة عبر بوابة Paymob المعتمدة من البنك المركزي المصري</p>
 
-          <!-- كروت وسائل الدفع الثلاث -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-6">
-            
-            <!-- 1. البطاقة البنكية -->
-            <button 
-              type="button"
-              (click)="setPaymentMethod('CARD')"
-              [class.border-[#5B65DC]]="selectedPaymentMethod === 'CARD'"
-              [class.bg-blue-50/30]="selectedPaymentMethod === 'CARD'"
-              [class.border-gray-200]="selectedPaymentMethod !== 'CARD'"
-              class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
-              <div class="flex items-center justify-between w-full mb-3">
-                <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
-                  [class.border-[#5B65DC]]="selectedPaymentMethod === 'CARD'"
-                  [class.border-gray-300]="selectedPaymentMethod !== 'CARD'">
-                  @if (selectedPaymentMethod === 'CARD') {
-                    <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
-                  }
-                </span>
-                <span class="text-xs font-black text-gray-400">Visa / Master</span>
-              </div>
-              <div>
-                <div class="text-sm font-bold text-[#122056]">بطاقة بنكية</div>
-                <div class="text-[11px] text-gray-500 mt-0.5">فيزا، ماستركارد، ميزة</div>
-              </div>
-            </button>
+            <!-- كروت وسائل الدفع الثلاث -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-6">
+              
+              <!-- 1. البطاقة البنكية -->
+              <button 
+                type="button"
+                (click)="setPaymentMethod('CARD')"
+                [class.border-[#5B65DC]]="selectedPaymentMethod === 'CARD'"
+                [class.bg-blue-50/30]="selectedPaymentMethod === 'CARD'"
+                [class.border-gray-200]="selectedPaymentMethod !== 'CARD'"
+                class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
+                <div class="flex items-center justify-between w-full mb-3">
+                  <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+                    [class.border-[#5B65DC]]="selectedPaymentMethod === 'CARD'"
+                    [class.border-gray-300]="selectedPaymentMethod !== 'CARD'">
+                    @if (selectedPaymentMethod === 'CARD') {
+                      <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
+                    }
+                  </span>
+                  <span class="text-xs font-black text-gray-400">Visa / Master</span>
+                </div>
+                <div>
+                  <div class="text-sm font-bold text-[#122056]">بطاقة بنكية</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">فيزا، ماستركارد، ميزة</div>
+                </div>
+              </button>
 
-            <!-- 2. المحافظ الإلكترونية -->
-            <button 
-              type="button"
-              (click)="setPaymentMethod('WALLET')"
-              [class.border-[#5B65DC]]="selectedPaymentMethod === 'WALLET'"
-              [class.bg-blue-50/30]="selectedPaymentMethod === 'WALLET'"
-              [class.border-gray-200]="selectedPaymentMethod !== 'WALLET'"
-              class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
-              <div class="flex items-center justify-between w-full mb-3">
-                <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
-                  [class.border-[#5B65DC]]="selectedPaymentMethod === 'WALLET'"
-                  [class.border-gray-300]="selectedPaymentMethod !== 'WALLET'">
-                  @if (selectedPaymentMethod === 'WALLET') {
-                    <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
-                  }
-                </span>
-                <span class="text-xs font-black text-red-500">كاش</span>
-              </div>
-              <div>
-                <div class="text-sm font-bold text-[#122056]">محفظة إلكترونية</div>
-                <div class="text-[11px] text-gray-500 mt-0.5">فودافون كاش، أورنج، اتصالات، WE</div>
-              </div>
-            </button>
+              <!-- 2. المحافظ الإلكترونية -->
+              <button 
+                type="button"
+                (click)="setPaymentMethod('WALLET')"
+                [class.border-[#5B65DC]]="selectedPaymentMethod === 'WALLET'"
+                [class.bg-blue-50/30]="selectedPaymentMethod === 'WALLET'"
+                [class.border-gray-200]="selectedPaymentMethod !== 'WALLET'"
+                class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
+                <div class="flex items-center justify-between w-full mb-3">
+                  <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+                    [class.border-[#5B65DC]]="selectedPaymentMethod === 'WALLET'"
+                    [class.border-gray-300]="selectedPaymentMethod !== 'WALLET'">
+                    @if (selectedPaymentMethod === 'WALLET') {
+                      <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
+                    }
+                  </span>
+                  <span class="text-xs font-black text-red-500">كاش</span>
+                </div>
+                <div>
+                  <div class="text-sm font-bold text-[#122056]">محفظة إلكترونية</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">فودافون كاش، أورنج، اتصالات، WE</div>
+                </div>
+              </button>
 
-            <!-- 3. فوري -->
+              <!-- 3. فوري -->
+              <button 
+                type="button"
+                (click)="setPaymentMethod('FAWRY')"
+                [class.border-[#5B65DC]]="selectedPaymentMethod === 'FAWRY'"
+                [class.bg-blue-50/30]="selectedPaymentMethod === 'FAWRY'"
+                [class.border-gray-200]="selectedPaymentMethod !== 'FAWRY'"
+                class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
+                <div class="flex items-center justify-between w-full mb-3">
+                  <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+                    [class.border-[#5B65DC]]="selectedPaymentMethod === 'FAWRY'"
+                    [class.border-gray-300]="selectedPaymentMethod !== 'FAWRY'">
+                    @if (selectedPaymentMethod === 'FAWRY') {
+                      <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
+                    }
+                  </span>
+                  <span class="text-xs font-black text-amber-600">فوري</span>
+                </div>
+                <div>
+                  <div class="text-sm font-bold text-[#122056]">فوري باي (Fawry)</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">الدفع نقداً في أي منفذ</div>
+                </div>
+              </button>
+
+            </div>
+
+            <!-- تفاصيل وسيلة الدفع المحددة -->
+            @if (selectedPaymentMethod === 'CARD') {
+              <div class="p-4 rounded-2xl bg-gray-50 border border-gray-200/60 text-xs text-gray-600 flex items-center gap-3">
+                <svg class="w-6 h-6 text-[#5B65DC] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>عند تأكيد الطلب، ستفتح نافذة الدفع الآمن لإدخال بيانات بطاقتك وتأكيد كود الـ OTP البنكي.</span>
+              </div>
+            }
+
+            @if (selectedPaymentMethod === 'WALLET') {
+              <div [formGroup]="walletForm" class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100 space-y-3">
+                <label class="block text-xs font-bold text-gray-700">رقم محفظة المحمول المسجلة (فودافون كاش / اتصالات / أورنج / وي) <span class="text-red-500">*</span></label>
+                <input 
+                  type="tel" 
+                  formControlName="phone"
+                  placeholder="01012345678" 
+                  dir="ltr"
+                  class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-sm focus:outline-none focus:border-[#5B65DC] text-right"
+                />
+                <p class="text-[11px] text-gray-500">سيتم إرسال طلب تأكيد الخصم وإدخال الرقم السري لمحفظتك فور الضغط على تأكيد.</p>
+              </div>
+            }
+
+            @if (selectedPaymentMethod === 'FAWRY' && fawryCode) {
+              <div class="p-5 rounded-2xl bg-amber-50 border border-amber-200 text-center space-y-3 animate-scale-up">
+                <div class="text-xs font-bold text-amber-800">تم إصدار كود السداد عبر فوري بنجاح:</div>
+                <div class="text-2xl sm:text-3xl font-black text-[#122056] tracking-wider bg-white py-2.5 px-6 rounded-xl border border-amber-300 inline-block">
+                  {{ fawryCode }}
+                </div>
+                <div>
+                  <button 
+                    type="button" 
+                    (click)="copyFawryCode()"
+                    class="text-xs font-bold px-4 py-1.5 rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors">
+                    {{ fawryCopied ? 'تم النسخ بنجاح ✓' : 'نسخ كود السداد' }}
+                  </button>
+                </div>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                  توجّه لأي فرع فوري أو تاجر معتمد واطلب سداد خدمة <strong>فوري باي (Fawry Pay)</strong> باستخدام الكود أعلاه خلال 48 ساعة. سيتم تفعيل العيادة تلقائياً فور السداد.
+                </p>
+              </div>
+            }
+
+            <!-- زر تأكيد الطلب والسداد -->
             <button 
-              type="button"
-              (click)="setPaymentMethod('FAWRY')"
-              [class.border-[#5B65DC]]="selectedPaymentMethod === 'FAWRY'"
-              [class.bg-blue-50/30]="selectedPaymentMethod === 'FAWRY'"
-              [class.border-gray-200]="selectedPaymentMethod !== 'FAWRY'"
-              class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
-              <div class="flex items-center justify-between w-full mb-3">
-                <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
-                  [class.border-[#5B65DC]]="selectedPaymentMethod === 'FAWRY'"
-                  [class.border-gray-300]="selectedPaymentMethod !== 'FAWRY'">
-                  @if (selectedPaymentMethod === 'FAWRY') {
-                    <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
-                  }
-                </span>
-                <span class="text-xs font-black text-amber-600">فوري</span>
-              </div>
-              <div>
-                <div class="text-sm font-bold text-[#122056]">فوري باي (Fawry)</div>
-                <div class="text-[11px] text-gray-500 mt-0.5">الدفع نقداً في أي منفذ</div>
-              </div>
+              type="button" 
+              (click)="confirmPayment()"
+              [disabled]="isProcessing || loadingPlan"
+              class="w-full mt-6 py-4 rounded-2xl bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white font-extrabold text-base hover:opacity-95 shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+              @if (isProcessing) {
+                <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>جاري تجهيز بوابة السداد...</span>
+              } @else {
+                <span>تأكيد ومتابعة الدفع ({{ totalAmount }} ج.م)</span>
+                <svg class="w-5 h-5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              }
             </button>
 
           </div>
-
-          <!-- تفاصيل وسيلة الدفع المحددة -->
-          @if (selectedPaymentMethod === 'CARD') {
-            <div class="p-4 rounded-2xl bg-gray-50 border border-gray-200/60 text-xs text-gray-600 flex items-center gap-3">
-              <svg class="w-6 h-6 text-[#5B65DC] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-              <span>عند تأكيد الطلب، ستفتح نافذة الدفع الآمن لإدخال بيانات بطاقتك وتأكيد كود الـ OTP البنكي.</span>
-            </div>
-          }
-
-          @if (selectedPaymentMethod === 'WALLET') {
-            <div [formGroup]="walletForm" class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100 space-y-3">
-              <label class="block text-xs font-bold text-gray-700">رقم محفظة المحمول المسجلة (فودافون كاش / اتصالات / أورنج / وي) <span class="text-red-500">*</span></label>
-              <input 
-                type="tel" 
-                formControlName="phone"
-                placeholder="01012345678" 
-                dir="ltr"
-                class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-sm focus:outline-none focus:border-[#5B65DC] text-right"
-              />
-              <p class="text-[11px] text-gray-500">سيتم إرسال طلب تأكيد الخصم وإدخال الرقم السري لمحفظتك فور الضغط على تأكيد.</p>
-            </div>
-          }
-
-          @if (selectedPaymentMethod === 'FAWRY' && fawryCode) {
-            <div class="p-5 rounded-2xl bg-amber-50 border border-amber-200 text-center space-y-3 animate-scale-up">
-              <div class="text-xs font-bold text-amber-800">تم إصدار كود السداد عبر فوري بنجاح:</div>
-              <div class="text-2xl sm:text-3xl font-black text-[#122056] tracking-wider bg-white py-2.5 px-6 rounded-xl border border-amber-300 inline-block">
-                {{ fawryCode }}
+        } @else {
+          <!-- في حالة الخصم 100% (مجاني) -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-emerald-200 shadow-sm space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
               <div>
-                <button 
-                  type="button" 
-                  (click)="copyFawryCode()"
-                  class="text-xs font-bold px-4 py-1.5 rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors">
-                  {{ fawryCopied ? 'تم النسخ بنجاح ✓' : 'نسخ كود السداد' }}
-                </button>
+                <h2 class="text-base font-bold text-[#122056]">اشتراك مجاني 100%</h2>
+                <p class="text-xs text-gray-500">تم تطبيق خصم كامل بواسطة كود الترويج. لا يتطلب إدخال وسيلة دفع.</p>
               </div>
-              <p class="text-xs text-gray-600 leading-relaxed">
-                توجّه لأي فرع فوري أو تاجر معتمد واطلب سداد خدمة <strong>فوري باي (Fawry Pay)</strong> باستخدام الكود أعلاه خلال 48 ساعة. سيتم تفعيل العيادة تلقائياً فور السداد.
-              </p>
             </div>
-          }
 
-          <!-- زر تأكيد الطلب والسداد -->
-          <button 
-            type="button" 
-            (click)="confirmPayment()"
-            [disabled]="isProcessing || loadingPlan"
-            class="w-full mt-6 py-4 rounded-2xl bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white font-extrabold text-base hover:opacity-95 shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
-            @if (isProcessing) {
-              <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span>جاري تجهيز بوابة السداد...</span>
-            } @else {
-              <span>تأكيد ومتابعة الدفع ({{ totalAmount }} ج.م)</span>
-              <svg class="w-5 h-5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            }
-          </button>
-
-        </div>
+            <button 
+              type="button" 
+              (click)="confirmPayment()"
+              [disabled]="isProcessing || loadingPlan"
+              class="w-full py-4 rounded-2xl bg-emerald-600 text-white font-extrabold text-base hover:bg-emerald-700 shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+              @if (isProcessing) {
+                <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>جاري تفعيل الاشتراك المجاني...</span>
+              } @else {
+                <span>تأكيد وتفعيل الاشتراك فوراً (مجاناً)</span>
+                <svg class="w-5 h-5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              }
+            </button>
+          </div>
+        }
 
       </div>
 
@@ -271,13 +307,80 @@
               </p>
             </div>
 
+            <!-- قسم إدخال وتطبيق كوبون الخصم -->
+            <div class="border-b border-gray-100 pb-5 mb-5">
+              <label class="block text-xs font-bold text-gray-700 mb-2">كود الخصم (Coupon Code)</label>
+              @if (!appliedCoupon) {
+                <div class="flex items-center gap-2">
+                  <input 
+                    type="text" 
+                    [(ngModel)]="couponCodeInput" 
+                    (keyup.enter)="applyCoupon()"
+                    placeholder="أدخل الكود هنا..." 
+                    dir="ltr"
+                    class="flex-1 px-3.5 py-2 rounded-xl border border-gray-200 bg-gray-50 text-xs uppercase font-mono tracking-wider focus:bg-white focus:outline-none focus:border-[#5B65DC] transition-colors"
+                  />
+                  <button 
+                    type="button" 
+                    (click)="applyCoupon()" 
+                    [disabled]="isValidatingCoupon || !couponCodeInput.trim()"
+                    class="px-4 py-2 rounded-xl bg-[#5B65DC] text-white text-xs font-bold hover:bg-[#4853c4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer">
+                    @if (isValidatingCoupon) {
+                      <svg class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    }
+                    <span>تطبيق</span>
+                  </button>
+                </div>
+              } @else {
+                <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span class="font-mono text-xs font-bold text-emerald-800">{{ appliedCoupon.code }}</span>
+                    <span class="text-[11px] text-emerald-600">({{ appliedCoupon.discountType === 'PERCENTAGE' ? (appliedCoupon.discountValue + '%') : (appliedCoupon.discountAmount + ' ج.م') }} خصم)</span>
+                  </div>
+                  <button 
+                    type="button" 
+                    (click)="clearCoupon()" 
+                    class="text-xs text-red-500 hover:text-red-700 font-bold px-2 py-0.5 rounded hover:bg-red-50 transition-colors cursor-pointer">
+                    إلغاء
+                  </button>
+                </div>
+              }
+
+              @if (couponError) {
+                <div class="mt-2 text-[11px] text-red-600 font-medium flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>{{ couponError }}</span>
+                </div>
+              }
+              @if (couponSuccess) {
+                <div class="mt-2 text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>{{ couponSuccess }}</span>
+                </div>
+              }
+            </div>
+
             <!-- تفاصيل الرسوم -->
             <div class="space-y-3 text-sm text-gray-600 border-b border-gray-100 pb-5 mb-5">
               <div class="flex items-center justify-between">
                 <span>سعر الباقة الأساسي</span>
-                <span class="font-bold text-[#122056]">{{ selectedPlan.price }} ج.م</span>
+                <span class="font-bold text-[#122056]">{{ baseAmount }} ج.م</span>
               </div>
-              @if (selectedPlan.discountPercentage > 0) {
+              @if (appliedCoupon && appliedCoupon.discountAmount > 0) {
+                <div class="flex items-center justify-between text-emerald-600 font-semibold">
+                  <span>خصم الكوبون ({{ appliedCoupon.code }})</span>
+                  <span>-{{ appliedCoupon.discountAmount }} ج.م</span>
+                </div>
+              }
+              @if (selectedPlan.discountPercentage > 0 && !appliedCoupon) {
                 <div class="flex items-center justify-between text-emerald-600">
                   <span>خصم الباقة الترويجي ({{ selectedPlan.discountPercentage }}%)</span>
                   <span>مطبّق ومشمول</span>
