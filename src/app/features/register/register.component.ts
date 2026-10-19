@@ -1,10 +1,14 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService } from '../../core/services/auth.service';
+import { injectQuery, injectMutation } from '@tanstack/angular-query-experimental';
+import { lastValueFrom } from 'rxjs';
+
+import { AuthService, RegisterPayload } from '../../core/services/auth.service';
 import { PlansService, Plan } from '../../core/services/plans.service';
+import { planKeys } from '../../core/queries';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -22,26 +26,51 @@ export class RegisterComponent implements OnDestroy {
 
   readonly loginUrl = environment.erpUrl;
 
-  registerForm: FormGroup;
-  showPassword = false;
-  submitting = false;
-  successSso = false;
-  errorMessage: string | null = null;
+  readonly registerForm: FormGroup;
+  readonly showPassword = signal(false);
+  readonly successSso = signal(false);
+  readonly errorMessage = signal<string | null>(null);
 
-  planId: string | null = null;
-  selectedPlan: Plan | null = null;
-  loadingPlan = false;
+  readonly planId = signal<string | null>(null);
 
   // OTP Verification States
-  showOtpModal = false;
+  readonly showOtpModal = signal(false);
   otpCode = '';
-  otpSubmitting = false;
-  sendingOtp = false;
-  otpError: string | null = null;
-  otpSuccessMessage: string | null = null;
-  resendCooldown = 0;
+  readonly otpError = signal<string | null>(null);
+  readonly otpSuccessMessage = signal<string | null>(null);
+  readonly resendCooldown = signal(0);
   private resendInterval: any = null;
-  verificationTicket: string | null = null;
+  readonly verificationTicket = signal<string | null>(null);
+
+  // --- TanStack Query for Plan Detail ---
+  readonly planQuery = injectQuery(() => ({
+    queryKey: planKeys.detail(this.planId() || ''),
+    queryFn: () => lastValueFrom(this.plansService.getPlanById(this.planId()!)),
+    enabled: !!this.planId(),
+  }));
+
+  readonly selectedPlan = computed<Plan | null>(() => this.planQuery.data() || null);
+  readonly loadingPlan = computed<boolean>(() => this.planQuery.isPending());
+
+  // --- TanStack Mutations ---
+  readonly requestOtpMutation = injectMutation(() => ({
+    mutationFn: (email: string) =>
+      lastValueFrom(this.authService.requestEmailVerification(email)),
+  }));
+
+  readonly confirmOtpMutation = injectMutation(() => ({
+    mutationFn: ({ email, code }: { email: string; code: string }) =>
+      lastValueFrom(this.authService.confirmEmailVerification(email, code)),
+  }));
+
+  readonly registerMutation = injectMutation(() => ({
+    mutationFn: (payload: RegisterPayload) =>
+      lastValueFrom(this.authService.register(payload)),
+  }));
+
+  readonly submitting = computed(() => this.registerMutation.isPending());
+  readonly sendingOtp = computed(() => this.requestOtpMutation.isPending());
+  readonly otpSubmitting = computed(() => this.confirmOtpMutation.isPending());
 
   constructor() {
     this.registerForm = this.fb.group({
@@ -53,7 +82,6 @@ export class RegisterComponent implements OnDestroy {
       terms: [true, [Validators.requiredTrue]],
     });
 
-    // Read optional query params (planId, email) with automatic unsubscription
     this.route.queryParamMap
       .pipe(takeUntilDestroyed())
       .subscribe((params) => {
@@ -65,8 +93,7 @@ export class RegisterComponent implements OnDestroy {
         }
 
         if (planParam) {
-          this.planId = planParam;
-          this.loadSelectedPlan(planParam);
+          this.planId.set(planParam);
         }
       });
   }
@@ -77,22 +104,8 @@ export class RegisterComponent implements OnDestroy {
     }
   }
 
-  loadSelectedPlan(planId: string): void {
-    this.loadingPlan = true;
-    this.plansService.getPlanById(planId).subscribe({
-      next: (plan) => {
-        this.selectedPlan = plan;
-        this.loadingPlan = false;
-      },
-      error: (err) => {
-        console.warn('Could not load plan details for planId:', planId, err);
-        this.loadingPlan = false;
-      },
-    });
-  }
-
   togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword.update((v) => !v);
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -132,7 +145,7 @@ export class RegisterComponent implements OnDestroy {
       return;
     }
 
-    if (this.verificationTicket) {
+    if (this.verificationTicket()) {
       this.executeRegistration();
       return;
     }
@@ -144,27 +157,26 @@ export class RegisterComponent implements OnDestroy {
     const email = this.registerForm.value.email?.trim().toLowerCase();
     if (!email) return;
 
-    this.sendingOtp = true;
-    this.errorMessage = null;
-    this.otpError = null;
+    this.errorMessage.set(null);
+    this.otpError.set(null);
 
-    this.authService.requestEmailVerification(email).subscribe({
-      next: () => {
-        this.sendingOtp = false;
-        this.showOtpModal = true;
-        this.otpSuccessMessage = isResend
-          ? 'تم إعادة إرسال رمز التحقق بنجاح.'
-          : 'تم إرسال رمز تحقق (6 أرقام) إلى بريدك الإلكتروني.';
+    this.requestOtpMutation.mutate(email, {
+      onSuccess: () => {
+        this.showOtpModal.set(true);
+        this.otpSuccessMessage.set(
+          isResend
+            ? 'تم إعادة إرسال رمز التحقق بنجاح.'
+            : 'تم إرسال رمز تحقق (6 أرقام) إلى بريدك الإلكتروني.'
+        );
         this.startResendCooldown();
       },
-      error: (err) => {
-        this.sendingOtp = false;
+      onError: (err: any) => {
         const msg = err.error?.message || 'تعذر إرسال رمز التحقق، يرجى المحاولة بعد قليل.';
         const formatted = Array.isArray(msg) ? msg.join(' • ') : msg;
         if (isResend) {
-          this.otpError = formatted;
+          this.otpError.set(formatted);
         } else {
-          this.errorMessage = formatted;
+          this.errorMessage.set(formatted);
         }
       },
     });
@@ -175,46 +187,49 @@ export class RegisterComponent implements OnDestroy {
     const code = this.otpCode.trim();
 
     if (!code || !/^[0-9]{6}$/.test(code)) {
-      this.otpError = 'يرجى إدخال رمز التحقق المكون من 6 أرقام.';
+      this.otpError.set('يرجى إدخال رمز التحقق المكون من 6 أرقام.');
       return;
     }
 
-    this.otpSubmitting = true;
-    this.otpError = null;
+    this.otpError.set(null);
 
-    this.authService.confirmEmailVerification(email, code).subscribe({
-      next: (res) => {
-        this.otpSubmitting = false;
-        this.verificationTicket = res.verificationTicket;
-        this.showOtpModal = false;
-        this.executeRegistration();
-      },
-      error: (err) => {
-        this.otpSubmitting = false;
-        const msg = err.error?.message;
-        this.otpError = Array.isArray(msg)
-          ? msg.join(' • ')
-          : (msg || 'رمز التحقق غير صحيح أو انتهت صلاحيته.');
-      },
-    });
+    this.confirmOtpMutation.mutate(
+      { email, code },
+      {
+        onSuccess: (res) => {
+          this.verificationTicket.set(res.verificationTicket);
+          this.showOtpModal.set(false);
+          this.executeRegistration();
+        },
+        onError: (err: any) => {
+          const msg = err.error?.message;
+          this.otpError.set(
+            Array.isArray(msg)
+              ? msg.join(' • ')
+              : (msg || 'رمز التحقق غير صحيح أو انتهت صلاحيته.')
+          );
+        },
+      }
+    );
   }
 
   closeOtpModal(): void {
-    this.showOtpModal = false;
+    this.showOtpModal.set(false);
     this.otpCode = '';
-    this.otpError = null;
+    this.otpError.set(null);
   }
 
   private startResendCooldown(): void {
-    this.resendCooldown = 60;
+    this.resendCooldown.set(60);
     if (this.resendInterval) {
       clearInterval(this.resendInterval);
     }
     this.resendInterval = setInterval(() => {
-      if (this.resendCooldown > 1) {
-        this.resendCooldown--;
+      const current = this.resendCooldown();
+      if (current > 1) {
+        this.resendCooldown.set(current - 1);
       } else {
-        this.resendCooldown = 0;
+        this.resendCooldown.set(0);
         clearInterval(this.resendInterval);
         this.resendInterval = null;
       }
@@ -222,32 +237,29 @@ export class RegisterComponent implements OnDestroy {
   }
 
   private executeRegistration(): void {
-    this.submitting = true;
-    this.errorMessage = null;
+    this.errorMessage.set(null);
 
     const formValues = this.registerForm.value;
 
-    const payload = {
+    const payload: RegisterPayload = {
       clinicName: formValues.clinicName.trim(),
       name: formValues.fullName.trim(),
       email: formValues.email.trim().toLowerCase(),
       phone: formValues.phone ? formValues.phone.trim() : undefined,
       password: formValues.password,
-      planId: this.planId || undefined,
-      verificationTicket: this.verificationTicket || undefined,
+      planId: this.planId() || undefined,
+      verificationTicket: this.verificationTicket() || undefined,
     };
 
-    this.authService.register(payload).subscribe({
-      next: (res) => {
-        this.successSso = true;
-        this.submitting = false;
+    this.registerMutation.mutate(payload, {
+      onSuccess: (res) => {
+        this.successSso.set(true);
 
         setTimeout(() => {
           this.authService.redirectToErp(res.accessToken);
         }, 1500);
       },
-      error: (err) => {
-        this.submitting = false;
+      onError: (err: any) => {
         console.error('Registration failed:', err);
 
         const status = err.status;
@@ -255,16 +267,16 @@ export class RegisterComponent implements OnDestroy {
 
         if (status === 400 || status === 409) {
           if (Array.isArray(serverMsg)) {
-            this.errorMessage = serverMsg.join(' • ');
+            this.errorMessage.set(serverMsg.join(' • '));
           } else if (serverMsg && serverMsg.toLowerCase().includes('email')) {
-            this.errorMessage = 'البريد الإلكتروني مسجل بالفعل، يرجى تسجيل الدخول أو استخدام بريد آخر.';
+            this.errorMessage.set('البريد الإلكتروني مسجل بالفعل، يرجى تسجيل الدخول أو استخدام بريد آخر.');
           } else {
-            this.errorMessage = serverMsg || 'بيانات التسجيل غير صالحة، يرجى مراجعة الحقول.';
+            this.errorMessage.set(serverMsg || 'بيانات التسجيل غير صالحة، يرجى مراجعة الحقول.');
           }
         } else if (status === 429) {
-          this.errorMessage = 'تم تجاوز عدد محاولات التسجيل المسموح بها، يرجى الانتظار دقيقة.';
+          this.errorMessage.set('تم تجاوز عدد محاولات التسجيل المسموح بها، يرجى الانتظار دقيقة.');
         } else {
-          this.errorMessage = 'حدث خطأ غير متوقع أثناء إنشاء الحساب، يرجى المحاولة لاحقاً.';
+          this.errorMessage.set('حدث خطأ غير متوقع أثناء إنشاء الحساب، يرجى المحاولة لاحقاً.');
         }
       },
     });

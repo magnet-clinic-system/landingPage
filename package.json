@@ -30,6 +30,7 @@
     "@angular/forms": "^21.1.0",
     "@angular/platform-browser": "^21.1.0",
     "@angular/router": "^21.1.0",
+    "@tanstack/angular-query-experimental": "^5.104.4",
     "aos": "^2.3.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
@@ -38,6 +39,7 @@
     "@angular/build": "^21.1.4",
     "@angular/cli": "^21.1.4",
     "@angular/compiler-cli": "^21.1.0",
+    "@tanstack/angular-query-devtools-experimental": "^5.87.5",
     "@types/aos": "^3.0.8",
     "autoprefixer": "^10.5.4",
     "jsdom": "^27.1.0",

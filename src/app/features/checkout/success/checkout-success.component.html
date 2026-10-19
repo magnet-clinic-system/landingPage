@@ -29,24 +29,24 @@
           <span>حالة الاشتراك</span>
           <span class="font-bold text-emerald-600 bg-emerald-100/60 px-2.5 py-0.5 rounded-full">نشط ومفعل ✓</span>
         </div>
-        @if (loadingDetails) {
+        @if (loadingDetails()) {
           <div class="py-2 text-center text-gray-400 text-xs animate-pulse">
             جاري تأكيد تفاصيل العملية...
           </div>
-        } @else if (paymentDetails) {
+        } @else if (paymentDetails(); as payment) {
           <div class="flex items-center justify-between">
             <span>المبلغ المسدد</span>
-            <span class="font-bold text-[#122056]">{{ paymentDetails.amount }} جنيه مصري</span>
+            <span class="font-bold text-[#122056]">{{ payment.amount }} جنيه مصري</span>
           </div>
           <div class="flex items-center justify-between">
             <span>وسيلة الدفع</span>
-            <span class="font-medium text-gray-700">{{ paymentDetails.paymentMethod }}</span>
+            <span class="font-medium text-gray-700">{{ payment.paymentMethod }}</span>
           </div>
         }
-        @if (paymentId) {
+        @if (paymentId()) {
           <div class="flex items-center justify-between text-[11px] text-gray-400 pt-1">
             <span>رقم العملية المرجعي</span>
-            <span class="font-mono text-gray-600" dir="ltr">{{ paymentId }}</span>
+            <span class="font-mono text-gray-600" dir="ltr">{{ paymentId() }}</span>
           </div>
         }
       </div>
@@ -64,8 +64,8 @@
 
       <!-- العداد التنازلي للتوجيه التلقائي -->
       <div class="mt-4 text-xs text-gray-400 flex items-center justify-center gap-2">
-        @if (countdownInterval) {
-          <span>سيتم التوجيه تلقائياً خلال {{ countdown }} ثوانٍ...</span>
+        @if (isAutoRedirecting()) {
+          <span>سيتم التوجيه تلقائياً خلال {{ countdown() }} ثوانٍ...</span>
           <button 
             type="button" 
             (click)="stopAutoRedirect()"

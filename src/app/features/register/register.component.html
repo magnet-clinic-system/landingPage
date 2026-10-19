@@ -47,25 +47,25 @@
           </p>
 
           <!-- كارت الباقة المختارة (إن وجدت) -->
-          @if (selectedPlan) {
+          @if (selectedPlan(); as plan) {
             <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 mb-6 text-white animate-fade-in">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs uppercase tracking-wider text-blue-200 font-bold">الباقة المحددة</span>
-                @if (selectedPlan.isHot) {
+                @if (plan.isHot) {
                   <span class="bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-sm">
                     الأكثر طلباً
                   </span>
                 }
               </div>
               <div class="text-xl font-extrabold text-white mb-1">
-                {{ selectedPlan.name }}
+                {{ plan.name }}
               </div>
               <div class="text-blue-100 text-sm mb-3">
-                {{ selectedPlan.price }} ج.م / {{ selectedPlan.durationDays >= 300 ? 'سنوياً' : 'شهرياً' }}
+                {{ plan.price }} ج.م / {{ plan.durationDays >= 300 ? 'سنوياً' : 'شهرياً' }}
               </div>
               <div class="text-xs text-blue-200 border-t border-white/10 pt-2 flex items-center justify-between">
-                <span>{{ selectedPlan.maxUsers }} مستخدمين كحد أقصى</span>
-                <span>{{ selectedPlan.maxBranches }} فروع مسموحة</span>
+                <span>{{ plan.maxUsers }} مستخدمين كحد أقصى</span>
+                <span>{{ plan.maxBranches }} فروع مسموحة</span>
               </div>
             </div>
           } @else {
@@ -117,12 +117,12 @@
         </div>
 
         <!-- رسالة الخطأ العامة إن حدثت -->
-        @if (errorMessage) {
+        @if (errorMessage()) {
           <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3 animate-shake">
             <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
             </svg>
-            <div class="font-semibold">{{ errorMessage }}</div>
+            <div class="font-semibold">{{ errorMessage() }}</div>
           </div>
         }
 
@@ -230,7 +230,7 @@
             </label>
             <div class="relative">
               <input 
-                [type]="showPassword ? 'text' : 'password'" 
+                [type]="showPassword() ? 'text' : 'password'" 
                 formControlName="password"
                 placeholder="••••••••"
                 dir="ltr"
@@ -243,7 +243,7 @@
                 type="button" 
                 (click)="togglePasswordVisibility()"
                 class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none p-1">
-                @if (showPassword) {
+                @if (showPassword()) {
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
                   </svg>
@@ -285,15 +285,15 @@
           <!-- زر الإرسال -->
           <button 
             type="submit" 
-            [disabled]="submitting || sendingOtp"
+            [disabled]="submitting() || sendingOtp()"
             class="w-full mt-4 py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white font-bold text-base hover:opacity-95 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
-            @if (submitting) {
+            @if (submitting()) {
               <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
               <span>جاري إنشاء العيادة...</span>
-            } @else if (sendingOtp) {
+            } @else if (sendingOtp()) {
               <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -316,7 +316,7 @@
   </div>
 
   <!-- مودال تأكيد البريد الإلكتروني عبر OTP -->
-  @if (showOtpModal) {
+  @if (showOtpModal()) {
     <div class="fixed inset-0 z-50 bg-[#122056]/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
       <div class="bg-white rounded-3xl p-8 sm:p-10 max-w-md w-full shadow-2xl border border-gray-100 animate-scale-up text-center relative">
         
@@ -347,15 +347,15 @@
           <strong class="text-[#122056] text-sm font-bold font-mono">{{ registerForm.value.email }}</strong>
         </p>
 
-        @if (otpError) {
+        @if (otpError()) {
           <div class="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold text-center animate-shake">
-            {{ otpError }}
+            {{ otpError() }}
           </div>
         }
 
-        @if (otpSuccessMessage) {
+        @if (otpSuccessMessage()) {
           <div class="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold text-center">
-            {{ otpSuccessMessage }}
+            {{ otpSuccessMessage() }}
           </div>
         }
 
@@ -377,9 +377,9 @@
         <button 
           type="button" 
           (click)="confirmOtp()"
-          [disabled]="otpSubmitting || otpCode.length !== 6"
+          [disabled]="otpSubmitting() || otpCode.length !== 6"
           class="w-full py-3.5 px-6 rounded-xl bg-[#5B65DC] hover:bg-[#4853c8] text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-          @if (otpSubmitting) {
+          @if (otpSubmitting()) {
             <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -392,13 +392,13 @@
 
         <!-- إعادة الإرسال -->
         <div class="mt-4 text-xs text-gray-500">
-          @if (resendCooldown > 0) {
-            <span>إعادة إرسال الرمز بعد <strong>{{ resendCooldown }}</strong> ثانية</span>
+          @if (resendCooldown() > 0) {
+            <span>إعادة إرسال الرمز بعد <strong>{{ resendCooldown() }}</strong> ثانية</span>
           } @else {
             <button 
               type="button" 
               (click)="requestOtp(true)" 
-              [disabled]="sendingOtp"
+              [disabled]="sendingOtp()"
               class="text-[#5B65DC] hover:underline font-bold cursor-pointer border-none bg-transparent">
               لم يصلك الرمز؟ أعد الإرسال
             </button>
@@ -410,7 +410,7 @@
   }
 
   <!-- شاشة التحويل التلقائي SSO Handoff Modal Overlay -->
-  @if (successSso) {
+  @if (successSso()) {
     <div class="fixed inset-0 z-50 bg-[#122056]/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
       <div class="bg-white rounded-3xl p-8 sm:p-10 max-w-md w-full text-center shadow-2xl border border-gray-100 animate-scale-up">
         

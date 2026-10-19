@@ -1,7 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { lastValueFrom } from 'rxjs';
 import { PlansService, Plan } from '../../../../core/services/plans.service';
+import { planKeys } from '../../../../core/queries';
 
 @Component({
   selector: 'app-home-pricing',
@@ -10,63 +13,48 @@ import { PlansService, Plan } from '../../../../core/services/plans.service';
   templateUrl: './home-pricing.html',
   styleUrl: './home-pricing.css',
 })
-export class HomePricing implements OnInit {
+export class HomePricing {
   private readonly plansService = inject(PlansService);
   private readonly router = inject(Router);
 
-  isYearly: boolean = false;
-  plans: Plan[] = [];
-  loading: boolean = true;
-  error: string | null = null;
+  readonly isYearly = signal<boolean>(false);
 
-  ngOnInit(): void {
-    this.loadPlans();
-  }
-
-  loadPlans(): void {
-    this.loading = true;
-    this.error = null;
-
-    this.plansService.getPlans().subscribe({
-      next: (data) => {
-        // Exclude trial from standard grid (trial is offered in hero/CTA)
-        this.plans = data || [];
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to load plans:', err);
-        this.error = 'تعذر تحميل باقات الأسعار حالياً، يرجى المحاولة لاحقاً';
-        this.loading = false;
-      },
-    });
-  }
+  readonly plansQuery = injectQuery(() => ({
+    queryKey: planKeys.lists(),
+    queryFn: () => lastValueFrom(this.plansService.getPlans()),
+  }));
 
   /**
    * Filter and order plans based on active monthly/yearly toggle.
+   * Computed signal avoids redundant recalculation on window scroll / change detection.
    */
-  get visiblePlans(): Plan[] {
-    if (!this.plans.length) return [];
+  readonly visiblePlans = computed<Plan[]>(() => {
+    const plans = this.plansQuery.data() || [];
+    if (!plans.length) return [];
 
     // Filter out trial plan for main pricing cards
-    const standardPlans = this.plans.filter((p) => !p.name.toUpperCase().startsWith('TRIAL'));
+    const standardPlans = plans.filter((p) => !p.name.toUpperCase().startsWith('TRIAL'));
 
-    if (this.isYearly) {
+    const order = ['BASIC', 'PRO', 'ENTERPRISE'];
+    const getIndex = (name: string) => order.findIndex((k) => name.toUpperCase().includes(k));
+
+    if (this.isYearly()) {
       // Annual plans (>= 300 days)
       const annual = standardPlans.filter((p) => p.durationDays >= 300);
-      return annual.sort((a, b) => {
-        const order = ['BASIC', 'PRO', 'ENTERPRISE'];
-        const getIndex = (name: string) => order.findIndex((k) => name.toUpperCase().includes(k));
-        return getIndex(a.name) - getIndex(b.name);
-      });
+      return [...annual].sort((a, b) => getIndex(a.name) - getIndex(b.name));
     } else {
       // Monthly plans (<= 31 days)
       const monthly = standardPlans.filter((p) => p.durationDays <= 31);
-      return monthly.sort((a, b) => {
-        const order = ['BASIC', 'PRO', 'ENTERPRISE'];
-        const getIndex = (name: string) => order.findIndex((k) => name.toUpperCase().includes(k));
-        return getIndex(a.name) - getIndex(b.name);
-      });
+      return [...monthly].sort((a, b) => getIndex(a.name) - getIndex(b.name));
     }
+  });
+
+  setBillingCycle(yearly: boolean): void {
+    this.isYearly.set(yearly);
+  }
+
+  refetchPlans(): void {
+    this.plansQuery.refetch();
   }
 
   choosePlan(planId?: string): void {
@@ -74,7 +62,7 @@ export class HomePricing implements OnInit {
       this.router.navigate(['/checkout'], {
         queryParams: {
           planId,
-          billingCycle: this.isYearly ? 'yearly' : 'monthly',
+          billingCycle: this.isYearly() ? 'yearly' : 'monthly',
         },
       });
     } else {
@@ -87,7 +75,7 @@ export class HomePricing implements OnInit {
   }
 
   isCustomPricing(plan: Plan): boolean {
-    return this.isEnterprise(plan) && (this.isYearly || Number(plan.price) === 0 || plan.durationDays >= 300);
+    return this.isEnterprise(plan) && (this.isYearly() || Number(plan.price) === 0 || plan.durationDays >= 300);
   }
 
   getPlanArabicTitle(name: string): string {
