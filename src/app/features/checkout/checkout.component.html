@@ -23,17 +23,17 @@
       <div class="lg:col-span-7 space-y-6">
 
         <!-- رسالة الخطأ إن وجدت -->
-        @if (errorMessage) {
+        @if (errorMessage()) {
           <div class="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3 animate-shake">
             <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
             </svg>
-            <div class="font-semibold">{{ errorMessage }}</div>
+            <div class="font-semibold">{{ errorMessage() }}</div>
           </div>
         }
 
         <!-- بيانات العيادة (تسجيل سريع إذا لم يكن مسجلاً) -->
-        @if (!isAuthenticated) {
+        @if (!isAuthenticated()) {
           <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm">
             <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
               <div>
@@ -91,7 +91,7 @@
         }
 
         <!-- اختيار وسيلة الدفع (إذا كان الإجمالي أكبر من 0) -->
-        @if (totalAmount > 0) {
+        @if (totalAmount() > 0) {
           <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm">
             <h2 class="text-lg font-bold text-[#122056] mb-2">2. اختر وسيلة الدفع المناسبة</h2>
             <p class="text-xs text-gray-400 mb-6">جميع المعاملات المالية مشفرة وآمنة عبر بوابة Paymob المعتمدة من البنك المركزي المصري</p>
@@ -103,15 +103,15 @@
               <button 
                 type="button"
                 (click)="setPaymentMethod('CARD')"
-                [class.border-[#5B65DC]]="selectedPaymentMethod === 'CARD'"
-                [class.bg-blue-50/30]="selectedPaymentMethod === 'CARD'"
-                [class.border-gray-200]="selectedPaymentMethod !== 'CARD'"
+                [class.border-[#5B65DC]]="selectedPaymentMethod() === 'CARD'"
+                [class.bg-blue-50/30]="selectedPaymentMethod() === 'CARD'"
+                [class.border-gray-200]="selectedPaymentMethod() !== 'CARD'"
                 class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
                 <div class="flex items-center justify-between w-full mb-3">
                   <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
-                    [class.border-[#5B65DC]]="selectedPaymentMethod === 'CARD'"
-                    [class.border-gray-300]="selectedPaymentMethod !== 'CARD'">
-                    @if (selectedPaymentMethod === 'CARD') {
+                    [class.border-[#5B65DC]]="selectedPaymentMethod() === 'CARD'"
+                    [class.border-gray-300]="selectedPaymentMethod() !== 'CARD'">
+                    @if (selectedPaymentMethod() === 'CARD') {
                       <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
                     }
                   </span>
@@ -127,15 +127,15 @@
               <button 
                 type="button"
                 (click)="setPaymentMethod('WALLET')"
-                [class.border-[#5B65DC]]="selectedPaymentMethod === 'WALLET'"
-                [class.bg-blue-50/30]="selectedPaymentMethod === 'WALLET'"
-                [class.border-gray-200]="selectedPaymentMethod !== 'WALLET'"
+                [class.border-[#5B65DC]]="selectedPaymentMethod() === 'WALLET'"
+                [class.bg-blue-50/30]="selectedPaymentMethod() === 'WALLET'"
+                [class.border-gray-200]="selectedPaymentMethod() !== 'WALLET'"
                 class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
                 <div class="flex items-center justify-between w-full mb-3">
                   <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
-                    [class.border-[#5B65DC]]="selectedPaymentMethod === 'WALLET'"
-                    [class.border-gray-300]="selectedPaymentMethod !== 'WALLET'">
-                    @if (selectedPaymentMethod === 'WALLET') {
+                    [class.border-[#5B65DC]]="selectedPaymentMethod() === 'WALLET'"
+                    [class.border-gray-300]="selectedPaymentMethod() !== 'WALLET'">
+                    @if (selectedPaymentMethod() === 'WALLET') {
                       <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
                     }
                   </span>
@@ -151,15 +151,15 @@
               <button 
                 type="button"
                 (click)="setPaymentMethod('FAWRY')"
-                [class.border-[#5B65DC]]="selectedPaymentMethod === 'FAWRY'"
-                [class.bg-blue-50/30]="selectedPaymentMethod === 'FAWRY'"
-                [class.border-gray-200]="selectedPaymentMethod !== 'FAWRY'"
+                [class.border-[#5B65DC]]="selectedPaymentMethod() === 'FAWRY'"
+                [class.bg-blue-50/30]="selectedPaymentMethod() === 'FAWRY'"
+                [class.border-gray-200]="selectedPaymentMethod() !== 'FAWRY'"
                 class="p-4 rounded-2xl border-2 text-right transition-all flex flex-col justify-between hover:border-[#5B65DC] cursor-pointer">
                 <div class="flex items-center justify-between w-full mb-3">
                   <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
-                    [class.border-[#5B65DC]]="selectedPaymentMethod === 'FAWRY'"
-                    [class.border-gray-300]="selectedPaymentMethod !== 'FAWRY'">
-                    @if (selectedPaymentMethod === 'FAWRY') {
+                    [class.border-[#5B65DC]]="selectedPaymentMethod() === 'FAWRY'"
+                    [class.border-gray-300]="selectedPaymentMethod() !== 'FAWRY'">
+                    @if (selectedPaymentMethod() === 'FAWRY') {
                       <span class="w-2 h-2 rounded-full bg-[#5B65DC]"></span>
                     }
                   </span>
@@ -174,7 +174,7 @@
             </div>
 
             <!-- تفاصيل وسيلة الدفع المحددة -->
-            @if (selectedPaymentMethod === 'CARD') {
+            @if (selectedPaymentMethod() === 'CARD') {
               <div class="p-4 rounded-2xl bg-gray-50 border border-gray-200/60 text-xs text-gray-600 flex items-center gap-3">
                 <svg class="w-6 h-6 text-[#5B65DC] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -183,7 +183,7 @@
               </div>
             }
 
-            @if (selectedPaymentMethod === 'WALLET') {
+            @if (selectedPaymentMethod() === 'WALLET') {
               <div [formGroup]="walletForm" class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100 space-y-3">
                 <label class="block text-xs font-bold text-gray-700">رقم محفظة المحمول المسجلة (فودافون كاش / اتصالات / أورنج / وي) <span class="text-red-500">*</span></label>
                 <input 
@@ -197,18 +197,18 @@
               </div>
             }
 
-            @if (selectedPaymentMethod === 'FAWRY' && fawryCode) {
+            @if (selectedPaymentMethod() === 'FAWRY' && fawryCode()) {
               <div class="p-5 rounded-2xl bg-amber-50 border border-amber-200 text-center space-y-3 animate-scale-up">
                 <div class="text-xs font-bold text-amber-800">تم إصدار كود السداد عبر فوري بنجاح:</div>
                 <div class="text-2xl sm:text-3xl font-black text-[#122056] tracking-wider bg-white py-2.5 px-6 rounded-xl border border-amber-300 inline-block">
-                  {{ fawryCode }}
+                  {{ fawryCode() }}
                 </div>
                 <div>
                   <button 
                     type="button" 
                     (click)="copyFawryCode()"
                     class="text-xs font-bold px-4 py-1.5 rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors">
-                    {{ fawryCopied ? 'تم النسخ بنجاح ✓' : 'نسخ كود السداد' }}
+                    {{ fawryCopied() ? 'تم النسخ بنجاح ✓' : 'نسخ كود السداد' }}
                   </button>
                 </div>
                 <p class="text-xs text-gray-600 leading-relaxed">
@@ -221,16 +221,16 @@
             <button 
               type="button" 
               (click)="confirmPayment()"
-              [disabled]="isProcessing || loadingPlan"
+              [disabled]="isProcessing() || loadingPlan()"
               class="w-full mt-6 py-4 rounded-2xl bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white font-extrabold text-base hover:opacity-95 shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
-              @if (isProcessing) {
+              @if (isProcessing()) {
                 <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
                 <span>جاري تجهيز بوابة السداد...</span>
               } @else {
-                <span>تأكيد ومتابعة الدفع ({{ totalAmount }} ج.م)</span>
+                <span>تأكيد ومتابعة الدفع ({{ totalAmount() }} ج.م)</span>
                 <svg class="w-5 h-5 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
@@ -256,9 +256,9 @@
             <button 
               type="button" 
               (click)="confirmPayment()"
-              [disabled]="isProcessing || loadingPlan"
+              [disabled]="isProcessing() || loadingPlan()"
               class="w-full py-4 rounded-2xl bg-emerald-600 text-white font-extrabold text-base hover:bg-emerald-700 shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
-              @if (isProcessing) {
+              @if (isProcessing()) {
                 <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -284,33 +284,33 @@
           
           <div class="text-xs uppercase tracking-wider text-gray-400 font-bold mb-2">ملخص الفاتورة</div>
           
-          @if (loadingPlan) {
+          @if (loadingPlan()) {
             <div class="animate-pulse space-y-4 my-6">
               <div class="h-6 bg-gray-200 rounded w-1/2"></div>
               <div class="h-4 bg-gray-100 rounded w-3/4"></div>
               <div class="h-8 bg-gray-200 rounded w-1/3"></div>
             </div>
-          } @else if (selectedPlan) {
+          } @else if (selectedPlan(); as plan) {
             <div class="border-b border-gray-100 pb-5 mb-5">
               <div class="flex items-center justify-between">
                 <h3 class="text-xl font-extrabold text-[#122056]">
-                  {{ getPlanArabicTitle(selectedPlan.name) }}
+                  {{ getPlanArabicTitle(plan.name) }}
                 </h3>
-                @if (selectedPlan.isHot) {
+                @if (plan.isHot) {
                   <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
                     الأكثر طلباً
                   </span>
                 }
               </div>
               <p class="text-xs text-gray-500 mt-1">
-                دورة الفوترة: <strong>{{ isYearly ? 'سنوية (365 يوماً)' : 'شهرية (30 يوماً)' }}</strong>
+                دورة الفوترة: <strong>{{ isYearly() ? 'سنوية (365 يوماً)' : 'شهرية (30 يوماً)' }}</strong>
               </p>
             </div>
 
             <!-- قسم إدخال وتطبيق كوبون الخصم -->
             <div class="border-b border-gray-100 pb-5 mb-5">
               <label class="block text-xs font-bold text-gray-700 mb-2">كود الخصم (Coupon Code)</label>
-              @if (!appliedCoupon) {
+              @if (!appliedCoupon()) {
                 <div class="flex items-center gap-2">
                   <input 
                     type="text" 
@@ -323,9 +323,9 @@
                   <button 
                     type="button" 
                     (click)="applyCoupon()" 
-                    [disabled]="isValidatingCoupon || !couponCodeInput.trim()"
+                    [disabled]="isValidatingCoupon() || !couponCodeInput.trim()"
                     class="px-4 py-2 rounded-xl bg-[#5B65DC] text-white text-xs font-bold hover:bg-[#4853c4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer">
-                    @if (isValidatingCoupon) {
+                    @if (isValidatingCoupon()) {
                       <svg class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -334,12 +334,12 @@
                     <span>تطبيق</span>
                   </button>
                 </div>
-              } @else {
+              } @else if (appliedCoupon(); as coupon) {
                 <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
                   <div class="flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    <span class="font-mono text-xs font-bold text-emerald-800">{{ appliedCoupon.code }}</span>
-                    <span class="text-[11px] text-emerald-600">({{ appliedCoupon.discountType === 'PERCENTAGE' ? (appliedCoupon.discountValue + '%') : (appliedCoupon.discountAmount + ' ج.م') }} خصم)</span>
+                    <span class="font-mono text-xs font-bold text-emerald-800">{{ coupon.code }}</span>
+                    <span class="text-[11px] text-emerald-600">({{ coupon.discountType === 'PERCENTAGE' ? (coupon.discountValue + '%') : (coupon.discountAmount + ' ج.م') }} خصم)</span>
                   </div>
                   <button 
                     type="button" 
@@ -350,20 +350,20 @@
                 </div>
               }
 
-              @if (couponError) {
+              @if (couponError()) {
                 <div class="mt-2 text-[11px] text-red-600 font-medium flex items-center gap-1">
                   <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                   </svg>
-                  <span>{{ couponError }}</span>
+                  <span>{{ couponError() }}</span>
                 </div>
               }
-              @if (couponSuccess) {
+              @if (couponSuccess()) {
                 <div class="mt-2 text-[11px] text-emerald-600 font-medium flex items-center gap-1">
                   <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                   </svg>
-                  <span>{{ couponSuccess }}</span>
+                  <span>{{ couponSuccess() }}</span>
                 </div>
               }
             </div>
@@ -372,17 +372,17 @@
             <div class="space-y-3 text-sm text-gray-600 border-b border-gray-100 pb-5 mb-5">
               <div class="flex items-center justify-between">
                 <span>سعر الباقة الأساسي</span>
-                <span class="font-bold text-[#122056]">{{ baseAmount }} ج.م</span>
+                <span class="font-bold text-[#122056]">{{ baseAmount() }} ج.م</span>
               </div>
-              @if (appliedCoupon && appliedCoupon.discountAmount > 0) {
+              @if (appliedCoupon() && appliedCoupon()!.discountAmount > 0) {
                 <div class="flex items-center justify-between text-emerald-600 font-semibold">
-                  <span>خصم الكوبون ({{ appliedCoupon.code }})</span>
-                  <span>-{{ appliedCoupon.discountAmount }} ج.م</span>
+                  <span>خصم الكوبون ({{ appliedCoupon()!.code }})</span>
+                  <span>-{{ appliedCoupon()!.discountAmount }} ج.م</span>
                 </div>
               }
-              @if (selectedPlan.discountPercentage > 0 && !appliedCoupon) {
+              @if (plan.discountPercentage > 0 && !appliedCoupon()) {
                 <div class="flex items-center justify-between text-emerald-600">
-                  <span>خصم الباقة الترويجي ({{ selectedPlan.discountPercentage }}%)</span>
+                  <span>خصم الباقة الترويجي ({{ plan.discountPercentage }}%)</span>
                   <span>مطبّق ومشمول</span>
                 </div>
               }
@@ -396,7 +396,7 @@
             <div class="flex items-baseline justify-between pt-1">
               <div>
                 <span class="text-xs text-gray-400 block">الإجمالي المستحق للسداد</span>
-                <span class="text-2xl sm:text-3xl font-black text-[#122056]">{{ totalAmount }}</span>
+                <span class="text-2xl sm:text-3xl font-black text-[#122056]">{{ totalAmount() }}</span>
                 <span class="text-xs font-bold text-gray-500 mr-1">جنيه مصري</span>
               </div>
               <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
@@ -430,7 +430,7 @@
   </div>
 
   <!-- نافذة Paymob Iframe Modal المنبثقة لسداد الكروت -->
-  @if (showIframeModal && safeIframeUrl) {
+  @if (showIframeModal() && safeIframeUrl()) {
     <div class="fixed inset-0 z-50 bg-[#122056]/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 animate-fade-in">
       <div class="bg-white rounded-3xl max-w-2xl w-full h-[620px] flex flex-col overflow-hidden shadow-2xl border border-gray-100 animate-scale-up">
         
@@ -462,7 +462,7 @@
         <!-- الـ Iframe المضمّن -->
         <div class="flex-1 w-full h-full relative bg-gray-100">
           <iframe 
-            [src]="safeIframeUrl" 
+            [src]="safeIframeUrl()" 
             class="w-full h-full border-0" 
             title="Paymob Payment Terminal">
           </iframe>

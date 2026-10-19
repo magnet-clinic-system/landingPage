@@ -25,18 +25,11 @@ export class PlansService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/plans`;
 
-  private plansCache$?: Observable<Plan[]>;
-
   /**
-   * Fetch all available subscription plans with caching for snappy UI.
+   * Fetch all available subscription plans.
    */
-  getPlans(forceRefresh = false): Observable<Plan[]> {
-    if (!this.plansCache$ || forceRefresh) {
-      this.plansCache$ = this.http.get<Plan[]>(this.apiUrl).pipe(
-        shareReplay(1)
-      );
-    }
-    return this.plansCache$;
+  getPlans(): Observable<Plan[]> {
+    return this.http.get<Plan[]>(this.apiUrl);
   }
 
   /**
