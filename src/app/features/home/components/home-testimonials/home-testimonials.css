@@ -6,3 +6,23 @@
 .hide-scroll-bar::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
 }
+
+/* بطاقات آراء الأطباء - عرض متجاوب ودقيق لمنع انقطاع الكارت الثالث */
+.testimonial-card {
+  width: 88%;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .testimonial-card {
+    width: calc((100% - 24px) / 2);
+  }
+}
+
+@media (min-width: 1024px) {
+  .testimonial-card {
+    width: calc((100% - 48px) / 3);
+  }
+}
+

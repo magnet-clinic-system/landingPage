@@ -85,6 +85,53 @@ export class AuthService {
   }
 
   /**
+   * Login with email and password for existing clinic managers/doctors
+   */
+  login(email: string, password: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
+      `${this.apiUrl}/login`,
+      {
+        email: email.trim().toLowerCase(),
+        password,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  /**
+   * Fetch clinic details using JWT token
+   */
+  getClinicDetails(token: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/clinics/my-clinic`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  /**
+   * Safely decode JWT token payload on client side
+   */
+  decodeToken(token: string): { sub?: string; email?: string; name?: string; clinicId?: string; role?: string; exp?: number } | null {
+    try {
+      if (!token) return null;
+      const cleanToken = token.replace(/^Bearer\s+/i, '').trim();
+      const parts = cleanToken.split('.');
+      if (parts.length !== 3) return null;
+      const payloadBase64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const jsonStr = decodeURIComponent(
+        atob(payloadBase64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonStr);
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Cross-Domain SSO Handoff:
    * Redirects user to ERP web application with access token in query param.
    */

@@ -1,39 +1,49 @@
-  <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-lg z-50 border-b border-gray-100 transition-all duration-300 shadow-sm" dir="rtl">
+  <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-lg z-50 border-b border-gray-100 transition-all duration-300 shadow-sm" dir="rtl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16 md:h-20">
+      <div class="flex justify-between items-center h-16 md:h-20 gap-4">
         
-        <div class="flex-shrink-0 flex items-center cursor-pointer">
-          <span class="text-2xl md:text-3xl font-extrabold text-[#122056] tracking-tight font-body">
+        <!-- الشعار -->
+        <div class="shrink-0 flex items-center cursor-pointer">
+          <a href="#home" class="text-2xl md:text-3xl font-extrabold text-[#122056] tracking-tight font-body whitespace-nowrap">
             Algor<span class="text-[#5B65DC]">Clinic</span>
-          </span>
-        </div>
-
-        <div class="hidden md:flex space-x-8 space-x-reverse items-center font-body">
-          <a href="#home" class="text-[#122056] font-bold hover:text-[#5B65DC] transition-colors">الرئيسية</a>
-          <a href="#about" class="text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors">عن النظام</a>
-          <a href="#features" class="text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors">المميزات</a>
-          <a href="#pricing" class="text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors">الباقات</a>
-          <a href="#faq" class="text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors">الأسئلة الشائعة</a>
-        </div>
-
-        <div class="hidden md:flex items-center gap-3 font-body">
-          <a [href]="erpUrl" class="text-[#122056] hover:text-[#5B65DC] font-bold px-3 py-2 transition-colors flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-            </svg>
-            تسجيل الدخول
           </a>
-          <a routerLink="/register" class="bg-gradient-to-r from-[#5B65DC] to-[#122056] hover:opacity-95 text-white px-5 py-2.5 rounded-full font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
+        </div>
+
+        <!-- روابط القائمة لشاشات الديسك توب (lg فما فوق) -->
+        <div class="hidden lg:flex items-center gap-6 xl:gap-8 font-body shrink-0">
+          <a href="#home" class="text-[#122056] font-bold hover:text-[#5B65DC] transition-colors whitespace-nowrap text-sm xl:text-base py-1">الرئيسية</a>
+          <a href="#about" class="text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors whitespace-nowrap text-sm xl:text-base py-1">عن النظام</a>
+          <a href="#features" class="text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors whitespace-nowrap text-sm xl:text-base py-1">المميزات</a>
+          <a href="#pricing" class="text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors whitespace-nowrap text-sm xl:text-base py-1">الباقات</a>
+          <a href="#faq" class="text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors whitespace-nowrap text-sm xl:text-base py-1">الأسئلة الشائعة</a>
+        </div>
+
+        <!-- أزرار الإجراءات لشاشات الديسك توب -->
+        <div class="hidden lg:flex items-center gap-2 xl:gap-3 font-body shrink-0">
+          @if (!isAuthenticated) {
+            <a [href]="erpUrl" class="text-[#122056] hover:text-[#5B65DC] font-bold px-2 xl:px-3 py-2 transition-colors flex items-center gap-1.5 whitespace-nowrap text-sm xl:text-base">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+              تسجيل الدخول
+            </a>
+          } @else {
+            <a [href]="erpUrl" class="text-emerald-700 hover:text-emerald-800 bg-emerald-50 border border-emerald-200/80 font-bold px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5 whitespace-nowrap text-xs xl:text-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              العودة للعيادة
+            </a>
+          }
+          <a routerLink="/register" class="bg-gradient-to-r from-[#5B65DC] to-[#122056] hover:opacity-95 text-white px-4 xl:px-5 py-2 xl:py-2.5 rounded-full font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-1.5 whitespace-nowrap text-xs xl:text-sm">
             ابدأ مجاناً 14 يوم
           </a>
-          <a href="#subscribe" class="text-[#122056] border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-full font-bold transition-all">
+          <a href="#subscribe" class="text-[#122056] border border-gray-200 hover:bg-gray-50 px-3 xl:px-4 py-2 rounded-full font-bold transition-all whitespace-nowrap text-xs xl:text-sm">
             طلب ديمو
           </a>
         </div>
 
-        <!-- زر القائمة للموبايل (Hamburger Menu) -->
-        <div class="md:hidden flex items-center">
-          <button (click)="toggleMenu()" class="text-[#122056] hover:text-[#5B65DC] focus:outline-none transition-colors">
+        <!-- زر القائمة للهواتف والتابلت ونصف الشاشة (أقل من lg) -->
+        <div class="lg:hidden flex items-center">
+          <button (click)="toggleMenu()" class="p-2 rounded-lg text-[#122056] hover:text-[#5B65DC] hover:bg-gray-100 focus:outline-none transition-colors cursor-pointer" aria-label="Toggle menu">
             @if (isMenuOpen()) {
               <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -49,24 +59,37 @@
       </div>
     </div>
 
-    <!-- القائمة المنسدلة للموبايل (Mobile Menu) -->
+    <!-- القائمة المنسدلة للشاشات الصغيرة والمتوسطة (lg:hidden) -->
     @if (isMenuOpen()) {
-      <div class="md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0 top-full">
-        <div class="px-4 pt-4 pb-6 space-y-4 flex flex-col font-body shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)]">
-          <a href="#home" (click)="closeMenu()" class="block text-[#122056] font-bold hover:text-[#5B65DC] transition-colors py-2 border-b border-gray-50">الرئيسية</a>
-          <a href="#about" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2 border-b border-gray-50">عن النظام</a>
-          <a href="#features" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2 border-b border-gray-50">المميزات</a>
-          <a href="#pricing" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2 border-b border-gray-50">الباقات</a>
-          <a href="#faq" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2 border-b border-gray-50">الأسئلة الشائعة</a>
-          <a [href]="erpUrl" class="block text-center border border-[#5B65DC] text-[#5B65DC] hover:bg-[#5B65DC]/5 px-6 py-2.5 rounded-xl font-bold transition-all">
-            تسجيل الدخول للنظام
-          </a>
-          <a routerLink="/register" (click)="closeMenu()" class="block text-center bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md">
-            ابدأ مجاناً 14 يوم
-          </a>
-          <a href="#subscribe" (click)="closeMenu()" class="block text-center border border-gray-200 text-[#122056] px-6 py-2.5 rounded-xl font-bold transition-all">
-            طلب ديمو
-          </a>
+      <div class="lg:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 top-full">
+        <div class="px-5 pt-4 pb-6 space-y-3 flex flex-col font-body">
+          <a href="#home" (click)="closeMenu()" class="block text-[#122056] font-bold hover:text-[#5B65DC] transition-colors py-2.5 border-b border-gray-50">الرئيسية</a>
+          <a href="#about" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2.5 border-b border-gray-50">عن النظام</a>
+          <a href="#features" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2.5 border-b border-gray-50">المميزات</a>
+          <a href="#pricing" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2.5 border-b border-gray-50">الباقات</a>
+          <a href="#faq" (click)="closeMenu()" class="block text-[#46464F] font-medium hover:text-[#5B65DC] transition-colors py-2.5 border-b border-gray-50">الأسئلة الشائعة</a>
+          
+          <div class="pt-4 flex flex-col gap-3">
+            @if (!isAuthenticated) {
+              <a [href]="erpUrl" class="text-[#122056] hover:text-[#5B65DC] font-bold py-2.5 transition-colors flex items-center justify-center gap-1.5 border border-gray-200 rounded-xl">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                تسجيل الدخول
+              </a>
+            } @else {
+              <a [href]="erpUrl" class="text-emerald-700 bg-emerald-50 border border-emerald-200 font-bold py-2.5 transition-colors flex items-center justify-center gap-1.5 rounded-xl">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                العودة للعيادة
+              </a>
+            }
+            <a routerLink="/register" (click)="closeMenu()" class="bg-gradient-to-r from-[#5B65DC] to-[#122056] text-white py-3 rounded-xl font-bold transition-all shadow-md text-center">
+              ابدأ مجاناً 14 يوم
+            </a>
+            <a href="#subscribe" (click)="closeMenu()" class="text-[#122056] border border-gray-200 hover:bg-gray-50 py-3 rounded-xl font-bold transition-all text-center">
+              طلب ديمو
+            </a>
+          </div>
         </div>
       </div>
     }

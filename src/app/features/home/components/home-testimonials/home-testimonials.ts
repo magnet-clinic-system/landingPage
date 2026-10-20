@@ -13,10 +13,12 @@ export class HomeTestimonials {
   // دالة السكرول (التحريك يمين وشمال)
   scrollReviews(direction: number) {
     if (this.slider) {
-      // 400 هو تقريباً عرض الكارت الواحد + المسافة
-      // في الـ RTL (العربي) بنعكس الاتجاه
-      const scrollAmount = direction * -400; 
-      this.slider.nativeElement.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const container = this.slider.nativeElement;
+      const card = container.firstElementChild as HTMLElement | null;
+      // حساب عرض الكارت الفعلي + المسافة البينية (24px)
+      const cardWidth = card ? card.offsetWidth + 24 : 400;
+      const scrollAmount = direction * -cardWidth;
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   }
 }

@@ -16,14 +16,16 @@
       </p>
 
       <!-- زرار التحويل (شهري / سنوي) -->
-      <div class="inline-flex items-center bg-gray-200/70 p-1.5 rounded-full relative">
+      <div class="inline-flex items-center bg-gray-100 p-1.5 rounded-full relative border border-gray-200/80 shadow-inner gap-1">
         <button 
           type="button"
           (click)="setBillingCycle(false)"
           [class.bg-[#122056]]="!isYearly()"
           [class.text-white]="!isYearly()"
+          [class.shadow-md]="!isYearly()"
           [class.text-gray-600]="isYearly()"
-          class="relative z-10 w-28 sm:w-36 py-2.5 text-sm sm:text-base font-bold rounded-full transition-all duration-300 shadow-sm">
+          [class.hover:text-[#122056]]="isYearly()"
+          class="relative z-10 px-5 sm:px-7 py-2.5 sm:py-3 text-sm sm:text-base font-bold rounded-full transition-all duration-300 whitespace-nowrap cursor-pointer flex items-center justify-center">
           الدفع الشهري
         </button>
         
@@ -32,10 +34,19 @@
           (click)="setBillingCycle(true)"
           [class.bg-[#122056]]="isYearly()"
           [class.text-white]="isYearly()"
+          [class.shadow-md]="isYearly()"
           [class.text-gray-600]="!isYearly()"
-          class="relative z-10 w-28 sm:w-36 py-2.5 text-sm sm:text-base font-bold rounded-full transition-all duration-300 flex items-center justify-center gap-1.5">
-          <span>الدفع السنوي</span>
-          <span class="bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full font-extrabold shadow-sm">وفر 20%</span>
+          [class.hover:text-[#122056]]="!isYearly()"
+          class="relative z-10 px-5 sm:px-7 py-2.5 sm:py-3 text-sm sm:text-base font-bold rounded-full transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer">
+          <span class="whitespace-nowrap">الدفع السنوي</span>
+          <span 
+            class="text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full font-extrabold whitespace-nowrap shadow-sm transition-all inline-flex items-center"
+            [class.bg-emerald-500]="isYearly()"
+            [class.text-white]="isYearly()"
+            [class.bg-emerald-100]="!isYearly()"
+            [class.text-emerald-700]="!isYearly()">
+            وفر 20%
+          </span>
         </button>
       </div>
     </div>

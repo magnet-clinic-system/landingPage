@@ -98,8 +98,10 @@
         </div>
 
         <div class="mt-8 pt-6 border-t border-white/10 text-xs text-blue-200">
-          هل لديك حساب بالفعل؟ 
-          <a [href]="loginUrl" class="text-white font-bold underline hover:text-blue-100 transition-colors">تسجيل الدخول</a>
+          هل لديك حساب عيادة تجريبي وترغب في الترقية؟ 
+          <button type="button" (click)="goToUpgradeLogin()" class="text-white font-bold underline hover:text-blue-100 transition-colors bg-transparent border-none p-0 cursor-pointer block mt-1">
+            ترقية اشتراك عيادتك الحالية من هنا ←
+          </button>
         </div>
 
       </div>
@@ -118,11 +120,28 @@
 
         <!-- رسالة الخطأ العامة إن حدثت -->
         @if (errorMessage()) {
-          <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3 animate-shake">
-            <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-            </svg>
-            <div class="font-semibold">{{ errorMessage() }}</div>
+          <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex flex-col gap-2 animate-shake">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+              </svg>
+              <div class="font-semibold">{{ errorMessage() }}</div>
+            </div>
+
+            @if (hasEmailConflict()) {
+              <div class="pt-2 border-t border-red-200/60 flex items-center justify-between">
+                <span class="text-xs text-red-600 font-bold">تريد تفعيل الاشتراك على نفس العيادة؟</span>
+                <button
+                  type="button"
+                  (click)="goToUpgradeLogin()"
+                  class="px-4 py-2 bg-[#122056] text-white rounded-xl text-xs font-black hover:bg-[#1a2b72] active:scale-95 transition-all cursor-pointer border-none flex items-center gap-1.5 shadow-sm">
+                  <span>ترقية العيادة الحالية مباشرة</span>
+                  <svg class="w-4 h-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
+              </div>
+            }
           </div>
         }
 

@@ -65,16 +65,67 @@ export class PaymentService {
   }
 
   private inMemoryToken: string | null = null;
+  private readonly TOKEN_STORAGE_KEY = 'algor_checkout_token';
+
   getStoredToken(): string | null {
-    return this.inMemoryToken;
+    if (this.inMemoryToken) return this.inMemoryToken;
+    if (typeof sessionStorage !== 'undefined') {
+      try {
+        const sessionToken = sessionStorage.getItem(this.TOKEN_STORAGE_KEY);
+        if (sessionToken) {
+          this.inMemoryToken = sessionToken;
+          return sessionToken;
+        }
+      } catch {}
+    }
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const localToken = localStorage.getItem(this.TOKEN_STORAGE_KEY);
+        if (localToken) {
+          this.inMemoryToken = localToken;
+          return localToken;
+        }
+      } catch {}
+    }
+    return null;
   }
 
-  saveStoredToken(token: string, _persist = false): void {
+  saveStoredToken(token: string, persist = true): void {
     this.inMemoryToken = token;
+    if (persist) {
+      if (typeof sessionStorage !== 'undefined') {
+        try {
+          sessionStorage.setItem(this.TOKEN_STORAGE_KEY, token);
+        } catch (e) {
+          console.warn('Could not persist token to sessionStorage', e);
+        }
+      }
+      if (typeof localStorage !== 'undefined') {
+        try {
+          localStorage.setItem(this.TOKEN_STORAGE_KEY, token);
+        } catch (e) {
+          console.warn('Could not persist token to localStorage', e);
+        }
+      }
+    }
   }
 
   clearStoredToken(): void {
     this.inMemoryToken = null;
+    if (typeof sessionStorage !== 'undefined') {
+      try {
+        sessionStorage.removeItem(this.TOKEN_STORAGE_KEY);
+      } catch (e) {
+        console.warn('Could not remove token from sessionStorage', e);
+      }
+    }
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.removeItem(this.TOKEN_STORAGE_KEY);
+      } catch (e) {
+        console.warn('Could not remove token from localStorage', e);
+      }
+    }
   }
 
   /**

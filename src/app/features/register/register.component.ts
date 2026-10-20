@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { injectQuery, injectMutation } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
@@ -21,6 +21,7 @@ import { environment } from '../../../environments/environment';
 export class RegisterComponent implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly plansService = inject(PlansService);
 
@@ -30,6 +31,7 @@ export class RegisterComponent implements OnDestroy {
   readonly showPassword = signal(false);
   readonly successSso = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly hasEmailConflict = signal<boolean>(false);
 
   readonly planId = signal<string | null>(null);
 
@@ -236,8 +238,21 @@ export class RegisterComponent implements OnDestroy {
     }, 1000);
   }
 
+  goToUpgradeLogin(): void {
+    const email = this.registerForm.value.email ? this.registerForm.value.email.trim().toLowerCase() : '';
+    const queryParams: any = { mode: 'login' };
+    if (this.planId()) {
+      queryParams.planId = this.planId();
+    }
+    if (email) {
+      queryParams.email = email;
+    }
+    this.router.navigate(['/checkout'], { queryParams });
+  }
+
   private executeRegistration(): void {
     this.errorMessage.set(null);
+    this.hasEmailConflict.set(false);
 
     const formValues = this.registerForm.value;
 
@@ -264,12 +279,21 @@ export class RegisterComponent implements OnDestroy {
 
         const status = err.status;
         const serverMsg = err.error?.message;
+        const isEmailConflict =
+          status === 409 ||
+          (typeof serverMsg === 'string' &&
+            (serverMsg.toLowerCase().includes('email') ||
+              serverMsg.includes('مسجل') ||
+              serverMsg.includes('already')));
 
-        if (status === 400 || status === 409) {
+        if (isEmailConflict) {
+          this.hasEmailConflict.set(true);
+          this.errorMessage.set(
+            'هذا البريد الإلكتروني مسجل بالفعل لعيادة سابقة. يمكنك تسجيل الدخول مباشرة لترقية حسابك الحالي دون إعادة إدخال البيانات.'
+          );
+        } else if (status === 400) {
           if (Array.isArray(serverMsg)) {
             this.errorMessage.set(serverMsg.join(' • '));
-          } else if (serverMsg && serverMsg.toLowerCase().includes('email')) {
-            this.errorMessage.set('البريد الإلكتروني مسجل بالفعل، يرجى تسجيل الدخول أو استخدام بريد آخر.');
           } else {
             this.errorMessage.set(serverMsg || 'بيانات التسجيل غير صالحة، يرجى مراجعة الحقول.');
           }
